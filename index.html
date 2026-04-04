@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Marshall Kunguma — Cybersecurity & Networking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e14;
+      --surface: #111720;
+      --border: #1e2d3d;
+      --accent: #00d4ff;
+      --accent2: #00ff9d;
+      --text: #c9d1d9;
+      --muted: #5a7a8a;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,14,20,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo { font-family: var(--mono); color: var(--accent); font-size: 1rem; letter-spacing: 0.05em; }
+    .nav-logo span { color: var(--accent2); }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav ul a {
+      font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--accent); }
+
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+      padding: 0 2.5rem; max-width: 960px;
+    }
+
+    .hero-tag {
+      font-family: var(--mono); font-size: 0.75rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 800; line-height: 1;
+      letter-spacing: -0.02em; margin-bottom: 1.5rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+    .hero h1 .name { color: #fff; }
+    .hero h1 .role {
+      display: block; color: var(--accent);
+      font-size: clamp(1rem, 2.5vw, 1.6rem); font-weight: 400;
+      font-family: var(--mono); margin-top: 0.75rem;
+    }
+
+    .hero-desc {
+      font-size: 1rem; color: var(--muted); max-width: 580px; line-height: 1.7;
+      margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.6s ease forwards 0.6s;
+    }
+
+    .hero-badges {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.7s;
+    }
+
+    .badge {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+      padding: 0.3rem 0.8rem; border-radius: 20px;
+      border: 1px solid var(--accent2); color: var(--accent2);
+      background: rgba(0,255,157,0.05);
+    }
+
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.9s;
+    }
+
+    .btn {
+      font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.75rem 1.75rem; border-radius: 4px;
+      text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; display: inline-block;
+    }
+    .btn-primary { background: var(--accent); color: #000; font-weight: 700; }
+    .btn-primary:hover { background: #fff; }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); background: transparent; }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    section {
+      position: relative; z-index: 1;
+      padding: 6rem 2.5rem; max-width: 960px; margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--accent2);
+      letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; color: #fff; margin-bottom: 3rem;
+    }
+
+    /* EDUCATION */
+    .edu-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent2); border-radius: 8px;
+      padding: 1.75rem 2rem; display: flex;
+      justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .edu-info h3 { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+    .edu-info p { font-family: var(--mono); font-size: 0.78rem; color: var(--accent2); margin-bottom: 0.6rem; }
+    .edu-info span { font-size: 0.85rem; color: var(--muted); line-height: 1.65; display: block; }
+    .edu-badge {
+      font-family: var(--mono); font-size: 0.7rem; padding: 0.4rem 1rem;
+      border-radius: 4px; background: rgba(0,255,157,0.1);
+      border: 1px solid var(--accent2); color: var(--accent2); white-space: nowrap; align-self: flex-start;
+    }
+
+    /* CERTS */
+    .certs-section-label {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--muted);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 0.75rem; margin-top: 2rem;
+    }
+    .certs-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem;
+    }
+    .cert-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.25rem; transition: border-color 0.2s, transform 0.2s;
+    }
+    .cert-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .cert-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+    .cert-name { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); margin-bottom: 0.2rem; }
+    .cert-issuer { font-size: 0.7rem; color: var(--muted); }
+    .cert-card.trifecta { border-top: 2px solid var(--accent2); }
+    .cert-card.trifecta .cert-name { color: var(--accent2); }
+
+    /* PROJECTS */
+    .projects-list { display: flex; flex-direction: column; gap: 1.5rem; }
+    .project-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px;
+      padding: 1.75rem; transition: border-color 0.2s, transform 0.2s;
+    }
+    .project-card:hover { border-left-color: var(--accent2); transform: translateX(4px); }
+    .project-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .project-title { font-size: 1.05rem; font-weight: 700; color: #fff; }
+    .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .tag {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em;
+      padding: 0.2rem 0.55rem; border-radius: 3px;
+      background: rgba(0,212,255,0.08); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.2);
+    }
+    .project-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.5rem;
+    }
+    .skill-group h4 {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent2);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    }
+    .skill-group ul { list-style: none; }
+    .skill-group ul li {
+      font-size: 0.84rem; color: var(--text); padding: 0.27rem 0;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .skill-group ul li::before { content: '›'; color: var(--accent); font-family: var(--mono); }
+
+    /* CONTACT */
+    .contact-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2.5rem; text-align: center;
+    }
+    .contact-box p { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.7; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    footer {
+      position: relative; z-index: 1; text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border); font-family: var(--mono);
+      font-size: 0.72rem; color: var(--muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { gap: 0.75rem; }
+      .hero, section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .edu-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">&lt;<span>marshnode</span> /&gt;</div>
+    <ul>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#certs">Certs</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-tag">// Cybersecurity & Networking Professional</p>
+    <h1>
+      <span class="name">Marshall Kunguma</span>
+      <span class="role">B.S. Cybersecurity · CCNA · CompTIA Trifecta+</span>
+    </h1>
+    <p class="hero-desc">
+      WGU Cybersecurity graduate with hands-on experience in network engineering,
+      security operations, and IT infrastructure. Certified across networking,
+      security, and penetration testing — backed by real-world labs and documented projects.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">CompTIA Trifecta</span>
+      <span class="badge">PenTest+</span>
+      <span class="badge">CySA+</span>
+      <span class="badge">CCNA</span>
+      <span class="badge">ITIL 4</span>
+      <span class="badge">LPI Linux Essentials</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get In Touch</a>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <p class="section-label">// academic background</p>
+    <h2 class="section-title">Education</h2>
+    <div class="edu-card">
+      <div class="edu-info">
+        <h3>B.S. Cybersecurity & Information Assurance</h3>
+        <p>Western Governors University (WGU)</p>
+        <span>
+          Coursework spanning network security, cloud security, cryptography, digital forensics,
+          risk management, governance & compliance frameworks, incident response, ethical hacking,
+          and data management. Program is NSA/DHS-designated as a Center of Academic Excellence.
+        </span>
+      </div>
+      <div class="edu-badge">✓ Graduate</div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certs">
+    <p class="section-label">// credentials</p>
+    <h2 class="section-title">Certifications</h2>
+
+    <p class="certs-section-label">— CompTIA Trifecta</p>
+    <div class="certs-grid">
+      <div class="cert-card trifecta">
+        <div class="cert-icon">🛠️</div>
+        <div class="cert-name">CompTIA A+</div>
+        <div class="cert-issuer">CompTIA</div>
+      </div>
+      <div class="cert-card trifecta">
+        <div class="cert-icon">🌐</div>
+        <div class="cert-name">CompTIA Network+</div>
+        <div class="cert-issuer">CompTIA</div>
+      </div>
+      <div class="cert-card trifecta">
+        <div class="cert-icon">🔒</div>
+        <div class="cert-name">CompTIA Security+</div>
+        <div class="cert-issuer">CompTIA</div>
+      </div>
+    </div>
+
+    <p class="certs-section-label" style="margin-top:1.75rem;">— Advanced & Specialty</p>
+    <div class="certs-grid">
+      <div class="cert-card">
+        <div class="cert-icon">🕵️</div>
+        <div class="cert-name">CompTIA PenTest+</div>
+        <div class="cert-issuer">CompTIA</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🔍</div>
+        <div class="cert-name">CompTIA CySA+</div>
+        <div class="cert-issuer">CompTIA</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">📡</div>
+        <div class="cert-name">Cisco CCNA</div>
+        <div class="cert-issuer">Cisco</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">⚙️</div>
+        <div class="cert-name">ITIL 4 Foundation</div>
+        <div class="cert-issuer">Axelos</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🐧</div>
+        <div class="cert-name">Linux Essentials</div>
+        <div class="cert-issuer">LPI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label">// hands-on work</p>
+    <h2 class="section-title">Lab Projects</h2>
+    <div class="projects-list">
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">TechCorp HQ Network Design</div>
+          <div class="project-tags">
+            <span class="tag">GNS3</span>
+            <span class="tag">OSPF</span>
+            <span class="tag">VLANs</span>
+            <span class="tag">NAT</span>
+            <span class="tag">EtherChannel</span>
+            <span class="tag">Cisco IOS</span>
+          </div>
+        </div>
+        <p class="project-desc">
+          Designed and simulated a full enterprise network for a fictional headquarters.
+          Implemented inter-VLAN routing, OSPF dynamic routing, NAT for internet access,
+          and EtherChannel for redundant uplinks. Includes topology diagrams and full Cisco IOS configurations.
+        </p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">GL-iNet Router Hardening & Troubleshooting</div>
+          <div class="project-tags">
+            <span class="tag">OpenWrt</span>
+            <span class="tag">Firewall</span>
+            <span class="tag">DNS over HTTPS</span>
+            <span class="tag">Security Hardening</span>
+          </div>
+        </div>
+        <p class="project-desc">
+          Hardened a GL-iNet Flint 2 router running OpenWrt: HTTPS-only admin access,
+          Cloudflare DNS over HTTPS, DNS rebinding protection, and custom firewall rules.
+          Also documents a self-caused DHCP failure and full recovery — a real-world troubleshooting case study.
+        </p>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-title">WireGuard VPN Server</div>
+          <div class="project-tags">
+            <span class="tag">WireGuard</span>
+            <span class="tag">VPN</span>
+            <span class="tag">OpenWrt</span>
+            <span class="tag">Tunneling</span>
+            <span class="tag">Linux</span>
+          </div>
+        </div>
+        <p class="project-desc">
+          Self-hosted WireGuard VPN on home infrastructure for secure remote access.
+          Covers key generation, peer configuration, routing, and firewall rules.
+          <em style="color: var(--accent2); font-style: normal; font-size: 0.8rem;">[In Progress]</em>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <p class="section-label">// technical toolkit</p>
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-grid">
+
+      <div class="skill-group">
+        <h4>Networking</h4>
+        <ul>
+          <li>TCP/IP & Subnetting</li>
+          <li>VLANs & Trunking (802.1Q)</li>
+          <li>OSPF & Dynamic Routing</li>
+          <li>NAT / PAT</li>
+          <li>ACLs</li>
+          <li>EtherChannel (LACP/PAgP)</li>
+          <li>DHCP & DNS</li>
+          <li>IPv4 & IPv6</li>
+          <li>WAN Technologies</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <h4>Cybersecurity</h4>
+        <ul>
+          <li>Penetration Testing</li>
+          <li>Vulnerability Assessment</li>
+          <li>Threat & Risk Analysis</li>
+          <li>Security Operations (SOC)</li>
+          <li>Incident Response</li>
+          <li>Digital Forensics</li>
+          <li>Cryptography</li>
+          <li>Identity & Access Management</li>
+          <li>SIEM & Log Analysis</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <h4>Governance & Compliance</h4>
+        <ul>
+          <li>NIST SP 800 Series</li>
+          <li>Risk Management Framework</li>
+          <li>FISMA Compliance</li>
+          <li>ITIL 4</li>
+          <li>CIA Triad</li>
+          <li>Privacy Act</li>
+          <li>Security Policies & Controls</li>
+          <li>Audit & Compliance</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <h4>Cloud & Systems</h4>
+        <ul>
+          <li>Cloud Security Concepts</li>
+          <li>Virtualization & VMs</li>
+          <li>Windows Server & Client</li>
+          <li>Linux (CLI, permissions, services)</li>
+          <li>Active Directory Basics</li>
+          <li>GNS3 Network Simulation</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <h4>Tools & Platforms</h4>
+        <ul>
+          <li>Cisco IOS</li>
+          <li>Wireshark</li>
+          <li>Nmap</li>
+          <li>Metasploit (basics)</li>
+          <li>OpenWrt / WireGuard</li>
+          <li>Splunk (basics)</li>
+          <li>Ticketing Systems</li>
+        </ul>
+      </div>
+
+      <div class="skill-group">
+        <h4>Programming & Data</h4>
+        <ul>
+          <li>SQL (queries, joins, filtering)</li>
+          <li>Python (scripting basics)</li>
+          <li>Bash / Shell Scripting</li>
+          <li>Git & GitHub</li>
+          <li>HTML / CSS</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label">// let's connect</p>
+    <h2 class="section-title">Contact</h2>
+    <div class="contact-box">
+      <p>
+        Open to roles in cybersecurity, network engineering, and IT support.<br/>
+        Feel free to reach out — I'd love to connect.
+      </p>
+      <div class="contact-links">
+        <a href="mailto:your@email.com" class="btn btn-primary">Email Me</a>
+        <a href="https://linkedin.com/in/yourprofile" target="_blank" class="btn btn-outline">LinkedIn</a>
+        <a href="https://github.com/marshnode" target="_blank" class="btn btn-outline">GitHub</a>
+        <a href="resume.pdf" class="btn btn-outline">Download Resume</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Marshall Kunguma — marshnode.github.io
+  </footer>
+
+</body>
+</html>
