@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Git Identity Crisis — marshnode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e14;
+      --surface: #111720;
+      --border: #1e2d3d;
+      --accent: #00d4ff;
+      --accent2: #00ff9d;
+      --text: #c9d1d9;
+      --muted: #5a7a8a;
+      --red: #ff4444;
+      --yellow: #ffb400;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,14,20,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo { font-family: var(--mono); color: var(--accent); font-size: 1rem; letter-spacing: 0.05em; text-decoration: none; }
+    .nav-logo span { color: var(--accent2); }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav ul a {
+      font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--accent); }
+
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 7rem 2.5rem 5rem;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+      margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+    .breadcrumb a { color: var(--accent); text-decoration: none; }
+    .breadcrumb a:hover { color: #fff; }
+    .breadcrumb span { color: var(--muted); }
+
+    .post-header {
+      margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .post-category {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .post-title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800; color: #fff;
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    .post-meta {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;
+    }
+    .meta-tag {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+      padding: 0.25rem 0.7rem; border-radius: 3px;
+      background: rgba(0,212,255,0.08); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.2);
+    }
+    .status-badge {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+      padding: 0.25rem 0.8rem; border-radius: 20px;
+      background: rgba(0,255,157,0.1); color: var(--accent2);
+      border: 1px solid var(--accent2);
+    }
+
+    .overview-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent); border-radius: 8px;
+      padding: 1.75rem 2rem; margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s;
+    }
+    .overview-box p { font-size: 0.95rem; color: var(--text); line-height: 1.75; }
+
+    .content { opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s; }
+    .section-block { margin-bottom: 3rem; }
+
+    .section-num {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+
+    h2.block-title {
+      font-size: 1.3rem; font-weight: 700; color: #fff;
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3.sub-title {
+      font-family: var(--mono); font-size: 0.85rem; color: var(--accent2);
+      letter-spacing: 0.1em; margin: 1.25rem 0 0.6rem;
+      text-transform: uppercase;
+    }
+
+    p.body-text {
+      font-size: 0.92rem; color: var(--text); line-height: 1.8; margin-bottom: 1rem;
+    }
+
+    .steps-list { list-style: none; margin: 0.75rem 0 1rem; }
+    .steps-list li {
+      font-size: 0.88rem; color: var(--text); line-height: 1.7;
+      padding: 0.35rem 0 0.35rem 1.5rem; position: relative;
+    }
+    .steps-list li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-family: var(--mono); }
+
+    /* TIMELINE */
+    .timeline { margin: 1.5rem 0; }
+    .timeline-item {
+      display: flex; gap: 1.25rem; margin-bottom: 1rem; align-items: flex-start;
+    }
+    .tl-marker {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 4px; padding: 0.2rem 0.5rem; white-space: nowrap;
+      flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .tl-content h4 { font-family: var(--mono); font-size: 0.8rem; color: #fff; margin-bottom: 0.25rem; }
+    .tl-content p { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+
+    /* ALERT BOXES */
+    .alert-red {
+      background: rgba(255,60,60,0.04); border: 1px solid rgba(255,80,80,0.2);
+      border-left: 4px solid var(--red); border-radius: 8px;
+      padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+    }
+    .alert-red .alert-label {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--red);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .alert-red p { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+    .alert-yellow {
+      background: rgba(255,180,0,0.04); border: 1px solid rgba(255,180,0,0.2);
+      border-left: 4px solid var(--yellow); border-radius: 8px;
+      padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+    }
+    .alert-yellow .alert-label {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--yellow);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .alert-yellow p { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+    .alert-green {
+      background: rgba(0,255,157,0.04); border: 1px solid rgba(0,255,157,0.2);
+      border-left: 4px solid var(--accent2); border-radius: 8px;
+      padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+    }
+    .alert-green .alert-label {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent2);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .alert-green p { font-size: 0.88rem; color: var(--text); line-height: 1.7; }
+
+    /* SCREENSHOT BLOCK */
+    .screenshot-block { margin: 1.5rem 0; }
+    .screenshot-block .ss-label {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .screenshot-block img {
+      width: 100%; display: block;
+      border: 1px solid var(--border); border-radius: 8px;
+    }
+    .screenshot-block .ss-caption {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+      margin-top: 0.5rem; line-height: 1.65;
+    }
+
+    /* FINDING CARD */
+    .finding-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 0.75rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .finding-num {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--accent2);
+      background: rgba(0,255,157,0.08); border: 1px solid rgba(0,255,157,0.2);
+      border-radius: 4px; padding: 0.2rem 0.5rem; white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .finding-content h4 { font-family: var(--mono); font-size: 0.8rem; color: #fff; margin-bottom: 0.3rem; }
+    .finding-content p { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+
+    /* LESSONS */
+    .lessons-list { list-style: none; margin: 0; }
+    .lessons-list li {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1rem 1.25rem 1rem 2.5rem;
+      margin-bottom: 0.75rem; font-size: 0.88rem; color: var(--text);
+      line-height: 1.7; position: relative;
+    }
+    .lessons-list li::before {
+      content: '✓'; position: absolute; left: 0; top: 0;
+      font-family: var(--mono); font-size: 0.75rem; color: var(--accent2);
+      background: rgba(0,255,157,0.1); border-right: 1px solid var(--border);
+      border-radius: 6px 0 0 6px; padding: 1rem 0.5rem;
+    }
+
+    /* SKILLS */
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .skill-chip {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+      padding: 0.3rem 0.75rem; border-radius: 3px;
+      background: rgba(0,212,255,0.06); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.18);
+    }
+
+    /* DATA TABLE */
+    .data-table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem;
+      font-family: var(--mono); font-size: 0.78rem;
+    }
+    .data-table th {
+      font-size: 0.63rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent2); text-align: left; padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--border); background: rgba(0,255,157,0.04);
+    }
+    .data-table td {
+      color: var(--text); padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid rgba(30,45,61,0.6);
+    }
+    .data-table td:first-child { color: var(--muted); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .td-red { color: #ff6666 !important; }
+    .td-green { color: var(--accent2) !important; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.65rem 1.5rem; border-radius: 4px;
+      border: 1px solid var(--border); color: var(--text); background: transparent;
+      text-decoration: none; transition: all 0.2s; margin-top: 3rem;
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      position: relative; z-index: 1; text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border); font-family: var(--mono);
+      font-size: 0.72rem; color: var(--muted); margin-top: 4rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { gap: 0.75rem; }
+      .page-wrap { padding: 6rem 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="nav-logo">&lt;<span>marshnode</span> /&gt;</a>
+    <ul>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+
+    <div class="breadcrumb">
+      <a href="../index.html">marshnode.github.io</a>
+      <span>/</span>
+      <a href="#">writeups</a>
+      <span>/</span>
+      <span>git-identity-crisis</span>
+    </div>
+
+    <div class="post-header">
+      <p class="post-category">// Incident Response · Git Security · Credential Management</p>
+      <h1 class="post-title">Git Identity Crisis: A Real-World Credential Misconfiguration and Remediation</h1>
+      <div class="post-meta">
+        <span class="meta-tag">Git</span>
+        <span class="meta-tag">GitHub</span>
+        <span class="meta-tag">Credential Management</span>
+        <span class="meta-tag">Token Security</span>
+        <span class="meta-tag">Incident Response</span>
+        <span class="meta-tag">Windows</span>
+        <span class="status-badge">✓ Resolved</span>
+      </div>
+    </div>
+
+    <div class="overview-box">
+      <p>
+        During active development work on a GitHub Pages portfolio repository, an anomaly was detected
+        in the commit history: commits being attributed to an unrecognized external GitHub account
+        despite the local machine being authenticated as the correct repository owner. This writeup
+        documents the full investigation, root cause analysis, and remediation of a Git identity
+        misconfiguration that caused credential attribution failure across multiple pushes.
+      </p>
+    </div>
+
+    <div class="content">
+
+      <!-- INCIDENT SUMMARY -->
+      <div class="section-block">
+        <p class="section-num">// incident summary</p>
+        <h2 class="block-title">Incident Summary</h2>
+
+        <table class="data-table">
+          <thead>
+            <tr><th>Field</th><th>Detail</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Date</td><td>April 9, 2026</td></tr>
+            <tr><td>Environment</td><td>Windows 11, PowerShell, Git 2.53.0</td></tr>
+            <tr><td>Repository</td><td>marshnode/marshnode.github.io (GitHub Pages)</td></tr>
+            <tr><td>Anomaly Detected</td><td>Commits attributed to unrecognized account: shubh2294</td></tr>
+            <tr><td>Root Cause</td><td>Incorrect Git user email set to placeholder value, not matching real GitHub user ID</td></tr>
+            <tr><td>Secondary Finding</td><td>PAT embedded in remote URL during diagnostic testing, immediately revoked</td></tr>
+            <tr><td>Status</td><td class="td-green">Fully Remediated</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DISCOVERY -->
+      <div class="section-block">
+        <p class="section-num">// phase 01</p>
+        <h2 class="block-title">Discovery</h2>
+        <p class="body-text">
+          While reviewing the repository commit history on GitHub following a series of pushes, several
+          recent commits were observed attributed to an account identified as shubh2294, a name and account
+          not recognized as associated with the repository owner. The commits contained legitimate content
+          from the active development session, ruling out unauthorized code injection. However, the
+          attribution anomaly warranted immediate investigation.
+        </p>
+
+        <div class="alert-red">
+          <p class="alert-label">⚠ Anomaly Detected</p>
+          <p>
+            Commits pushed from the local machine appeared under an unrecognized GitHub account in the
+            repository's commit history. The repository owner's account (marshnode) was not being credited
+            for work it authored and pushed.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// commit history showing unrecognized account</p>
+          <img src="../assets/screenshots/incident-commit-history.png" alt="GitHub commit history showing shubh2294 attribution"/>
+          <p class="ss-caption">
+            GitHub repository commit history showing multiple recent commits attributed to shubh2294
+            rather than the repository owner marshnode. The commits contain legitimate content pushed
+            during the active development session, confirming this is an attribution issue rather than
+            unauthorized access. Earlier commits correctly show marshnode as the author, pinpointing
+            when the misconfiguration first took effect.
+          </p>
+        </div>
+      </div>
+
+      <!-- INVESTIGATION -->
+      <div class="section-block">
+        <p class="section-num">// phase 02</p>
+        <h2 class="block-title">Investigation</h2>
+        <p class="body-text">
+          Investigation began with the most likely sources of credential attribution failure: cached
+          credentials in Windows Credential Manager, Git global identity configuration, and the
+          authentication token being used for pushes.
+        </p>
+
+        <h3 class="sub-title">Step 1: Credential Manager Inspection</h3>
+        <p class="body-text">
+          Windows Credential Manager was inspected for the <em>git:https://github.com</em> entry.
+          The stored username showed marshnode, which appeared correct on the surface. However,
+          the password field contains the actual Personal Access Token used for authentication,
+          and the token itself determines which GitHub account GitHub recognizes, not the username label.
+        </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// Windows Credential Manager entry</p>
+          <img src="../assets/screenshots/incident-credential-manager.png" alt="Windows Credential Manager showing git:https://github.com entry"/>
+          <p class="ss-caption">
+            Windows Credential Manager showing the cached Git credential for github.com. The username
+            field displays marshnode but the token stored in the password field was identified as belonging
+            to a different GitHub account. GitHub authenticates pushes using the token, not the username
+            label stored locally, meaning the username field alone is not sufficient to confirm identity.
+          </p>
+        </div>
+
+        <h3 class="sub-title">Step 2: Git Identity Configuration Audit</h3>
+        <p class="body-text">
+          The Git global configuration was audited by checking the configured user name and email.
+          The user name was correctly set to Marshall Kunguma. However, the email was set to a
+          placeholder value of <em>12345678+marshnode@users.noreply.github.com</em>, using a generic
+          placeholder ID of 12345678 rather than the actual GitHub user ID assigned to the marshnode account.
+        </p>
+        <p class="body-text">
+          GitHub uses the email address in a commit to link that commit to a specific account. When the
+          email does not match any real GitHub account, GitHub falls back to attributing the commit to
+          whoever's token authenticated the push. Since a token associated with shubh2294 was cached
+          in Credential Manager at the time, all commits were attributed to that account.
+        </p>
+
+        <h3 class="sub-title">Step 3: Locating the Correct User ID</h3>
+        <p class="body-text">
+          The correct GitHub user ID for the marshnode account was located in GitHub Settings under
+          the Emails section, where GitHub displays the noreply address in the format
+          <em>USER_ID+username@users.noreply.github.com</em>. The real user ID was confirmed as
+          273592105, not the placeholder value of 12345678 previously configured.
+        </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// GitHub email settings showing correct noreply address</p>
+          <img src="../assets/screenshots/incident-email-settings.png" alt="GitHub email settings showing noreply address with correct user ID"/>
+          <p class="ss-caption">
+            GitHub Settings email page revealing the correct noreply address:
+            273592105+marshnode@users.noreply.github.com. This confirmed the root cause. The Git global
+            config email was set to 12345678+marshnode which does not correspond to any GitHub account,
+            causing GitHub to attribute commits to the authenticated token owner instead.
+          </p>
+        </div>
+      </div>
+
+      <!-- ROOT CAUSE -->
+      <div class="section-block">
+        <p class="section-num">// phase 03</p>
+        <h2 class="block-title">Root Cause Analysis</h2>
+
+        <p class="body-text">
+          The root cause was a misconfigured Git global email using a placeholder user ID that did not
+          match the actual GitHub account. GitHub's commit attribution system works as follows: when a
+          push is received, GitHub checks the commit's author email against its user database. If the
+          email matches a registered account, that account is credited. If no match is found, GitHub
+          attributes the commit to the account that authenticated the push via token.
+        </p>
+
+        <div class="finding-card">
+          <span class="finding-num">CAUSE 01</span>
+          <div class="finding-content">
+            <h4>Placeholder User ID in Git Email Config</h4>
+            <p>
+              Git global user email was set to 12345678+marshnode@users.noreply.github.com during initial
+              setup using a generic placeholder. The real marshnode GitHub user ID is 273592105. Because
+              the email matched no real account, GitHub fell back to token-based attribution.
+            </p>
+          </div>
+        </div>
+
+        <div class="finding-card">
+          <span class="finding-num">CAUSE 02</span>
+          <div class="finding-content">
+            <h4>Cached Token Belonging to a Different Account</h4>
+            <p>
+              During the initial push session, a Personal Access Token belonging to the shubh2294 account
+              was entered at the credential prompt, possibly copied from a browser session where a different
+              GitHub account was active. This token was cached by Windows Credential Manager and used for
+              all subsequent pushes, causing GitHub to attribute all commits to shubh2294.
+            </p>
+          </div>
+        </div>
+
+        <div class="finding-card">
+          <span class="finding-num">CAUSE 03</span>
+          <div class="finding-content">
+            <h4>Token Exposed in Remote URL During Diagnostics</h4>
+            <p>
+              During the diagnostic process, a Personal Access Token was embedded directly in the remote
+              URL using git remote set-url. Running git remote -v subsequently printed the full URL
+              including the token in plain text. The token was identified immediately and revoked within
+              minutes of exposure. No unauthorized use was detected.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECONDARY INCIDENT: TOKEN EXPOSURE -->
+      <div class="section-block">
+        <p class="section-num">// secondary finding</p>
+        <h2 class="block-title">Token Exposure and Immediate Revocation</h2>
+
+        <div class="alert-yellow">
+          <p class="alert-label">⚡ Secondary Finding</p>
+          <p>
+            During diagnostic testing, a Personal Access Token was embedded in the Git remote URL.
+            The token was exposed in plain text when git remote -v was run. It was identified immediately,
+            revoked on GitHub within minutes, and replaced with a fresh token. No unauthorized repository
+            access was detected before revocation.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// token embedded in remote URL, immediately identified</p>
+          <img src="../assets/screenshots/incident-token-exposed.png" alt="git remote -v output showing token in URL, blurred"/>
+          <p class="ss-caption">
+            Output of git remote -v showing the remote URL with the embedded token visible in plain text.
+            The token string has been redacted in this screenshot. Upon seeing this output, the token was
+            immediately revoked via GitHub Settings → Developer settings → Personal access tokens.
+            This finding reinforced the importance of never embedding credentials directly in URLs,
+            as any tool that prints the remote URL will expose the token.
+          </p>
+        </div>
+
+        <h3 class="sub-title">Revocation Steps Taken</h3>
+        <ul class="steps-list">
+          <li>Identified token exposure from git remote -v output</li>
+          <li>Navigated to GitHub Settings → Developer settings → Personal access tokens</li>
+          <li>Deleted the exposed token immediately</li>
+          <li>Removed the token from the remote URL using git remote set-url to restore the clean URL</li>
+          <li>Generated a fresh token with minimum required scope (repo only)</li>
+          <li>Verified no unauthorized commits or repository changes occurred during the exposure window</li>
+        </ul>
+      </div>
+
+      <!-- REMEDIATION -->
+      <div class="section-block">
+        <p class="section-num">// phase 04</p>
+        <h2 class="block-title">Remediation</h2>
+        <p class="body-text">
+          Once the root cause was identified, remediation was straightforward. The Git global email
+          was updated to use the correct GitHub user ID, and a fresh token generated under the correct
+          account was stored in Windows Credential Manager.
+        </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// git config email corrected to real user ID</p>
+          <img src="../assets/screenshots/incident-email-fix.png" alt="git config command correcting email to real GitHub user ID"/>
+          <p class="ss-caption">
+            The remediation command: git config --global user.email with the correct noreply address
+            273592105+marshnode@users.noreply.github.com. An empty commit was then pushed to verify
+            attribution. The subsequent push confirmed the fix, with the commit correctly appearing
+            under the marshnode account on GitHub for the first time during this session.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// successful push with correct attribution confirmed</p>
+          <img src="../assets/screenshots/incident-push-success.png" alt="Successful git push after remediation"/>
+          <p class="ss-caption">
+            Terminal output showing the successful push after applying the email fix. The commit
+            eaf4709 pushed cleanly to origin main. Verification on GitHub confirmed this commit
+            appeared correctly under the marshnode account, confirming the misconfiguration was fully
+            resolved.
+          </p>
+        </div>
+
+        <div class="alert-green">
+          <p class="alert-label">✓ Resolution Confirmed</p>
+          <p>
+            All subsequent commits after applying the correct email configuration appeared correctly
+            attributed to the marshnode account on GitHub. The root cause was fully resolved.
+            Windows Credential Manager was updated with a valid marshnode token. The exposed token
+            was revoked with no impact detected.
+          </p>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="section-block">
+        <p class="section-num">// incident timeline</p>
+        <h2 class="block-title">Timeline</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="tl-marker">T+00</span>
+            <div class="tl-content">
+              <h4>Anomaly Detected</h4>
+              <p>Commit history review revealed shubh2294 account attributed to recent pushes from the local machine.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+05</span>
+            <div class="tl-content">
+              <h4>Investigation Begins</h4>
+              <p>Windows Credential Manager inspected. Cached username showed marshnode but token origin unconfirmed.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+15</span>
+            <div class="tl-content">
+              <h4>Git Config Audited</h4>
+              <p>Git global user email identified as using placeholder ID 12345678 instead of real GitHub user ID.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+20</span>
+            <div class="tl-content">
+              <h4>Token Exposure Detected</h4>
+              <p>During diagnostic testing, PAT embedded in remote URL was exposed via git remote -v output. Immediately identified.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+22</span>
+            <div class="tl-content">
+              <h4>Token Revoked</h4>
+              <p>Exposed token deleted from GitHub. Remote URL cleaned. Fresh token generated with repo scope only.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+35</span>
+            <div class="tl-content">
+              <h4>Root Cause Confirmed</h4>
+              <p>Correct GitHub user ID located in GitHub email settings. Mismatch between placeholder ID and real ID confirmed as root cause.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+40</span>
+            <div class="tl-content">
+              <h4>Remediation Applied</h4>
+              <p>Git global email updated to 273592105+marshnode@users.noreply.github.com. Empty commit pushed to verify.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="tl-marker">T+42</span>
+            <div class="tl-content">
+              <h4>Resolution Confirmed</h4>
+              <p>Commit correctly attributed to marshnode on GitHub. All subsequent pushes verified as correctly attributed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LESSONS LEARNED -->
+      <div class="section-block">
+        <p class="section-num">// lessons learned</p>
+        <h2 class="block-title">Lessons Learned</h2>
+        <ul class="lessons-list">
+          <li>Always verify the Git global user email matches the exact noreply address shown in GitHub Settings, including the correct numeric user ID. A placeholder ID will not link commits to the correct account.</li>
+          <li>The username stored in Windows Credential Manager is a label only. GitHub authenticates using the token in the password field. Always verify which account a token was generated under before storing it.</li>
+          <li>Never embed a Personal Access Token directly in a remote URL. Git commands like git remote -v will print the full URL including the token in plain text. Use the credential prompt instead.</li>
+          <li>Apply minimum token scope. Generating tokens with only the repo scope limits the blast radius if a token is ever exposed or misused.</li>
+          <li>When commit attribution looks wrong, check git config user.email first. It is the most common and least obvious cause of this class of issue.</li>
+          <li>Revoke first, investigate second. As soon as a token is confirmed exposed, revoke it immediately. Investigation can continue with a new token in place.</li>
+        </ul>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="section-block">
+        <p class="section-num">// skills demonstrated</p>
+        <h2 class="block-title">Skills Demonstrated</h2>
+        <div class="skills-grid">
+          <span class="skill-chip">Incident Detection</span>
+          <span class="skill-chip">Root Cause Analysis</span>
+          <span class="skill-chip">Git CLI</span>
+          <span class="skill-chip">Credential Management</span>
+          <span class="skill-chip">Token Security</span>
+          <span class="skill-chip">Rapid Remediation</span>
+          <span class="skill-chip">Windows Credential Manager</span>
+          <span class="skill-chip">GitHub Security Settings</span>
+          <span class="skill-chip">Least Privilege Principle</span>
+          <span class="skill-chip">Incident Documentation</span>
+        </div>
+      </div>
+
+      <a href="../index.html#projects" class="back-btn">← Back to Projects</a>
+
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Marshall Kunguma — marshnode.github.io
+  </footer>
+
+</body>
+</html>
