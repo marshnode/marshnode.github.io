@@ -593,6 +593,18 @@
             was revoked with no impact detected.
           </p>
         </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// git log verification showing before and after</p>
+          <img src="../assets/screenshots/incident-verification.png" alt="git log output showing email attribution before and after fix"/>
+          <p class="ss-caption">
+            Output of git log showing the five most recent commits with full author name and email.
+            The most recent commit (eaf4709) correctly shows 273592105+marshnode@users.noreply.github.com,
+            confirming the fix took effect. The four commits before it show the old placeholder email
+            12345678+marshnode, clearly marking the boundary between the misconfigured state and the
+            resolved state. This single output captures the entire incident in one view.
+          </p>
+        </div>
       </div>
 
       <!-- TIMELINE -->
