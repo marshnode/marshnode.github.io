@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TechCorp HQ Network Design — marshnode</title>
+  <title>TechCorp HQ Enterprise Network Design — marshnode</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -116,7 +116,6 @@
     }
     .overview-box p { font-size: 0.95rem; color: var(--text); line-height: 1.75; }
 
-    /* TABLES */
     .data-table {
       width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem;
       font-family: var(--mono); font-size: 0.78rem;
@@ -133,10 +132,7 @@
     .data-table td:first-child { color: var(--muted); }
     .data-table tr:last-child td { border-bottom: none; }
 
-    .content {
-      opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s;
-    }
-
+    .content { opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s; }
     .section-block { margin-bottom: 3rem; }
 
     .section-num {
@@ -165,12 +161,8 @@
       font-size: 0.88rem; color: var(--text); line-height: 1.7;
       padding: 0.35rem 0 0.35rem 1.5rem; position: relative;
     }
-    .steps-list li::before {
-      content: '›'; position: absolute; left: 0;
-      color: var(--accent); font-family: var(--mono);
-    }
+    .steps-list li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-family: var(--mono); }
 
-    /* STAGE HEADER */
     .stage-card {
       background: var(--surface); border: 1px solid var(--border);
       border-left: 3px solid var(--accent); border-radius: 8px;
@@ -180,40 +172,40 @@
       font-family: var(--mono); font-size: 0.62rem; color: var(--accent);
       letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem;
     }
-    .stage-title {
-      font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;
+    .stage-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+
+    .screenshot-block { margin: 1.5rem 0; }
+    .screenshot-block .ss-label {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .screenshot-block img {
+      width: 100%; display: block;
+      border: 1px solid var(--border); border-radius: 8px;
+    }
+    .screenshot-block .ss-caption {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+      margin-top: 0.5rem; line-height: 1.65;
     }
 
-    /* TROUBLESHOOTING CARDS */
     .trouble-item {
       background: rgba(255,180,0,0.03); border: 1px solid rgba(255,180,0,0.15);
       border-left: 3px solid #ffb400; border-radius: 6px;
       padding: 1rem 1.25rem; margin-bottom: 0.75rem;
     }
-    .trouble-item h4 {
-      font-family: var(--mono); font-size: 0.75rem; color: #ffb400;
-      margin-bottom: 0.4rem; letter-spacing: 0.05em;
-    }
+    .trouble-item h4 { font-family: var(--mono); font-size: 0.75rem; color: #ffb400; margin-bottom: 0.4rem; }
     .trouble-item p { font-size: 0.84rem; color: var(--text); line-height: 1.65; }
 
-    /* VERIFICATION MATRIX */
-    .verify-table {
-      width: 100%; border-collapse: collapse; margin: 1rem 0;
-      font-family: var(--mono); font-size: 0.78rem;
-    }
+    .verify-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-family: var(--mono); font-size: 0.78rem; }
     .verify-table th {
       font-size: 0.63rem; letter-spacing: 0.15em; text-transform: uppercase;
       color: var(--accent2); text-align: left; padding: 0.6rem 0.9rem;
       border-bottom: 1px solid var(--border); background: rgba(0,255,157,0.04);
     }
-    .verify-table td {
-      color: var(--text); padding: 0.55rem 0.9rem;
-      border-bottom: 1px solid rgba(30,45,61,0.6);
-    }
+    .verify-table td { color: var(--text); padding: 0.55rem 0.9rem; border-bottom: 1px solid rgba(30,45,61,0.6); }
     .verify-table tr:last-child td { border-bottom: none; }
     .pass { color: var(--accent2); }
 
-    /* SKILLS */
     .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
     .skill-chip {
       font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
@@ -222,25 +214,14 @@
       border: 1px solid rgba(0,212,255,0.18);
     }
 
-    /* TOOLS TABLE */
-    .tools-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem;
-      margin-top: 0.75rem;
-    }
-    .tool-chip {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 6px; padding: 0.75rem 1rem;
-    }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
+    .tool-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; }
     .tool-chip .tool-name { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); margin-bottom: 0.2rem; }
     .tool-chip .tool-use { font-size: 0.72rem; color: var(--muted); }
 
-    /* REFS */
     .ref-list { list-style: none; margin-top: 0.75rem; }
     .ref-list li { margin-bottom: 0.5rem; }
-    .ref-list a {
-      font-family: var(--mono); font-size: 0.78rem; color: var(--accent);
-      text-decoration: none; transition: color 0.2s;
-    }
+    .ref-list a { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); text-decoration: none; transition: color 0.2s; }
     .ref-list a:hover { color: var(--accent2); }
     .ref-list a::before { content: '→ '; }
 
@@ -297,32 +278,39 @@
       <h1 class="post-title">TechCorp HQ Enterprise Network Design</h1>
       <div class="post-meta">
         <span class="meta-tag">Cisco Packet Tracer</span>
+        <span class="meta-tag">Cisco 2911 Router</span>
+        <span class="meta-tag">Cisco 3560 Multilayer Switch</span>
+        <span class="meta-tag">Cisco 2960 Access Switches</span>
         <span class="meta-tag">VLANs</span>
         <span class="meta-tag">OSPF</span>
         <span class="meta-tag">EtherChannel</span>
         <span class="meta-tag">NAT/PAT</span>
-        <span class="meta-tag">Cisco IOS</span>
         <span class="status-badge">✓ Completed</span>
       </div>
     </div>
 
     <div class="overview-box">
       <p>
-        Full design, build, and verification of an enterprise network for a fictional company — TechCorp HQ.
-        Starting from a blank Packet Tracer canvas, the topology was designed, every device cabled, every
-        protocol configured, and end-to-end connectivity verified across all three departments. A CCNA-level
-        lab mirroring real-world infrastructure, with every configuration decision documented alongside the
-        reasoning behind it — not just the commands.
+        This project documents the full design, build, and verification of an enterprise network for a
+        fictional company called TechCorp HQ. Starting from a blank Packet Tracer canvas, I designed the
+        topology, cabled every device, configured every protocol, and verified end-to-end connectivity
+        across all three departments. This is a CCNA-level lab that mirrors real-world enterprise
+        infrastructure. Every configuration decision is documented with the reasoning behind it, not just
+        the commands. This writeup also includes an honest account of every issue encountered during the
+        build and how each one was resolved.
       </p>
     </div>
 
     <div class="content">
 
-      <!-- BUSINESS REQUIREMENTS -->
       <div class="section-block">
         <p class="section-num">// requirements</p>
         <h2 class="block-title">Business Requirements</h2>
-        <p class="body-text">TechCorp HQ has three departments requiring isolated but interconnected network segments:</p>
+        <p class="body-text">
+          TechCorp HQ has three departments that each need isolated network segments at Layer 2 for security,
+          while still being able to communicate with each other at Layer 3 for day-to-day business operations.
+          All departments also need internet access routed through a single edge router.
+        </p>
         <table class="data-table">
           <thead>
             <tr><th>Department</th><th>VLAN</th><th>Subnet</th><th>Gateway</th></tr>
@@ -336,20 +324,45 @@
         </table>
       </div>
 
-      <!-- TOPOLOGY -->
       <div class="section-block">
         <p class="section-num">// topology</p>
         <h2 class="block-title">Network Topology</h2>
-        <p class="body-text">The network follows a three-tier hierarchical model:</p>
-        <ul class="steps-list">
-          <li><strong style="color:#fff;">Edge Router (R1):</strong> Cisco 2911. Handles NAT/PAT and OSPF routing toward the internet.</li>
-          <li><strong style="color:#fff;">Core Switch (SW-Core):</strong> Cisco 3560 multilayer switch. Handles inter-VLAN routing and OSPF.</li>
-          <li><strong style="color:#fff;">Access Switches (SW-Access1/2/3):</strong> Cisco 2960 Layer 2 switches. Connect end devices to their VLANs.</li>
-        </ul>
-        <p class="body-text" style="margin-top:0.75rem;">
-          Each access switch connects to the core via two physical cables bundled into a single logical
-          EtherChannel link using LACP for redundancy and increased bandwidth.
+        <p class="body-text">
+          The network follows a three-tier hierarchical model commonly used in enterprise environments.
+          This model separates the network into distinct layers, each with a specific role, making the
+          design easier to manage, scale, and troubleshoot.
         </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// topology diagram</p>
+          <img src="../assets/screenshots/topology-drawio.png" alt="TechCorp HQ Network Topology Diagram"/>
+          <p class="ss-caption">
+            Full topology drawn in Draw.io showing the three-tier hierarchy. R1 sits at the edge connecting
+            to the internet. SW-Core sits at the distribution layer handling inter-VLAN routing and OSPF.
+            Three access switches connect to SW-Core via dual EtherChannel links, each serving one
+            department VLAN. PC0 represents Management (VLAN 10), PC1 represents Engineering (VLAN 20),
+            and PC2 represents Finance (VLAN 30).
+          </p>
+        </div>
+
+        <h3 class="sub-title">Device Roles</h3>
+        <ul class="steps-list">
+          <li><strong style="color:#fff;">R1 (Cisco 2911):</strong> Edge router. Handles NAT/PAT to translate private addresses for internet access and runs OSPF to exchange routes with SW-Core.</li>
+          <li><strong style="color:#fff;">SW-Core (Cisco 3560 Multilayer Switch):</strong> Distribution layer. Performs inter-VLAN routing via SVIs, runs OSPF, and connects to all three access switches via EtherChannel bundles.</li>
+          <li><strong style="color:#fff;">SW-Access1, SW-Access2, SW-Access3 (Cisco 2960):</strong> Access layer. Pure Layer 2 switches connecting end-user devices to their assigned VLANs. Each uplinks to SW-Core via two physical cables bundled into a single EtherChannel.</li>
+          <li><strong style="color:#fff;">PC0 (192.168.10.10):</strong> Management department endpoint on VLAN 10.</li>
+          <li><strong style="color:#fff;">PC1 (192.168.20.10):</strong> Engineering department endpoint on VLAN 20.</li>
+          <li><strong style="color:#fff;">PC2 (192.168.30.10):</strong> Finance department endpoint on VLAN 30.</li>
+        </ul>
+
+        <h3 class="sub-title">Benefits of This Topology</h3>
+        <ul class="steps-list">
+          <li>Department traffic is isolated at Layer 2, reducing broadcast noise and preventing Finance from seeing Engineering packets on the wire.</li>
+          <li>Inter-VLAN routing happens inside SW-Core at hardware speed, removing the need for a dedicated router for internal traffic.</li>
+          <li>Dual physical links between each access switch and SW-Core, bundled via EtherChannel, provide both redundancy and increased bandwidth without STP blocking any link.</li>
+          <li>A single public IP on R1 serves all three departments through NAT/PAT, exactly as real-world corporate gateways operate.</li>
+          <li>OSPF dynamic routing means routes are learned automatically. Adding a new subnet in future requires no manual static route updates across all devices.</li>
+        </ul>
 
         <h3 class="sub-title">IP Addressing</h3>
         <table class="data-table">
@@ -357,12 +370,12 @@
             <tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Role</th></tr>
           </thead>
           <tbody>
-            <tr><td>R1</td><td>Gig0/0</td><td>10.0.0.1/30</td><td>Link to SW-Core</td></tr>
-            <tr><td>R1</td><td>Gig0/1</td><td>203.0.113.1/24</td><td>WAN internet facing</td></tr>
+            <tr><td>R1</td><td>Gig0/0</td><td>10.0.0.1/30</td><td>Point-to-point link to SW-Core</td></tr>
+            <tr><td>R1</td><td>Gig0/1</td><td>203.0.113.1/24</td><td>WAN, internet facing</td></tr>
             <tr><td>SW-Core</td><td>Fa0/7</td><td>10.0.0.2/30</td><td>Routed uplink to R1</td></tr>
-            <tr><td>SW-Core</td><td>VLAN 10 SVI</td><td>192.168.10.1/24</td><td>Gateway — Management</td></tr>
-            <tr><td>SW-Core</td><td>VLAN 20 SVI</td><td>192.168.20.1/24</td><td>Gateway — Engineering</td></tr>
-            <tr><td>SW-Core</td><td>VLAN 30 SVI</td><td>192.168.30.1/24</td><td>Gateway — Finance</td></tr>
+            <tr><td>SW-Core</td><td>VLAN 10 SVI</td><td>192.168.10.1/24</td><td>Default gateway, Management</td></tr>
+            <tr><td>SW-Core</td><td>VLAN 20 SVI</td><td>192.168.20.1/24</td><td>Default gateway, Engineering</td></tr>
+            <tr><td>SW-Core</td><td>VLAN 30 SVI</td><td>192.168.30.1/24</td><td>Default gateway, Finance</td></tr>
             <tr><td>PC0</td><td>Fa0</td><td>192.168.10.10/24</td><td>Management host</td></tr>
             <tr><td>PC1</td><td>Fa0</td><td>192.168.20.10/24</td><td>Engineering host</td></tr>
             <tr><td>PC2</td><td>Fa0</td><td>192.168.30.10/24</td><td>Finance host</td></tr>
@@ -375,19 +388,61 @@
         <p class="stage-label">// stage 01</p>
         <h3 class="stage-title">VLAN Creation</h3>
         <p class="body-text">
-          Created four VLANs on every switch: Management (10), Engineering (20), Finance (30), and Native (99).
-          Applied on SW-Core and all three access switches.
+          Created four VLANs on every switch in the network: Management (10), Engineering (20),
+          Finance (30), and Native (99). Applied on SW-Core and all three access switches.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          Without VLANs, every device shares the same broadcast domain — every ARP request and DHCP broadcast
-          goes to every device, degrading performance and creating security risks. Finance traffic would be
-          visible to Engineering. VLANs contain traffic within each department at Layer 2.
+          Without VLANs, every device on every switch shares the same broadcast domain. Every ARP request,
+          every DHCP broadcast, and every announcement from any device reaches every other device on the network.
+          In a company environment this creates unnecessary traffic, degrades performance, and creates security
+          risks. Finance traffic would be visible to Engineering devices at the frame level.
         </p>
         <p class="body-text">
-          VLAN 99 was designated as the native VLAN. Best practice is to move the native VLAN away from the
-          default VLAN 1, which is a known vector for VLAN hopping attacks.
+          VLANs solve this by creating logical segments. A PC in the Management VLAN only sees broadcasts
+          from other Management devices. VLAN 99 was created as a dedicated native VLAN to move untagged
+          trunk traffic away from the default VLAN 1, which is a well-known vector for VLAN hopping attacks.
         </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// show vlan brief on SW-Core</p>
+          <img src="../assets/screenshots/vlan-brief-swcore.png" alt="VLAN Database on SW-Core"/>
+          <p class="ss-caption">
+            Output of show vlan brief on SW-Core confirming all four VLANs are created and active:
+            VLAN 10 (Management), VLAN 20 (Engineering), VLAN 30 (Finance), and VLAN 99 (Native).
+            Port assignments are not yet shown here because trunk and access port configuration
+            happens in later stages.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// show vlan brief on SW-Access1</p>
+          <img src="../assets/screenshots/vlan-brief-switch0.png" alt="VLAN Database on SW-Access1"/>
+          <p class="ss-caption">
+            The same VLAN database replicated on SW-Access1. VLANs must exist on every switch in the
+            network, not just the core. Without this, a trunk port receiving a tagged frame for an
+            unknown VLAN would drop it. All four VLANs are confirmed active on this switch.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// show vlan brief on SW-Access2</p>
+          <img src="../assets/screenshots/vlan-brief-switch1.png" alt="VLAN Database on SW-Access2"/>
+          <p class="ss-caption">
+            VLAN database on SW-Access2. Consistent VLAN configuration across all switches is
+            essential before configuring trunk ports. Mismatched VLAN databases are a common source
+            of connectivity failures that are easy to miss.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// show vlan brief on SW-Access3</p>
+          <img src="../assets/screenshots/vlan-brief-switch2.png" alt="VLAN Database on SW-Access3"/>
+          <p class="ss-caption">
+            VLAN database on SW-Access3, the third access switch serving the Finance department.
+            All four VLANs confirmed present and active before proceeding to trunk configuration.
+          </p>
+        </div>
       </div>
 
       <!-- STAGE 2 -->
@@ -395,19 +450,49 @@
         <p class="stage-label">// stage 02</p>
         <h3 class="stage-title">Trunk Ports (802.1Q)</h3>
         <p class="body-text">
-          Configured uplink ports between SW-Core and each access switch as 802.1Q trunk ports on both ends.
-          Every trunk allows VLANs 10, 20, 30, and 99 with native VLAN 99.
+          Configured the uplink ports between SW-Core and each access switch as 802.1Q trunk ports
+          on both ends of every link. Every trunk was set to allow VLANs 10, 20, 30, and 99 with
+          native VLAN 99 on all trunk ports.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          A standard access port carries only one VLAN. Without trunking, only one VLAN's traffic could cross
-          the uplinks, defeating the purpose of VLAN segmentation. 802.1Q tagging inserts a 4-byte VLAN tag
-          into each Ethernet frame so all three department VLANs can share a single physical cable.
+          A standard access port carries only one VLAN. If the uplinks between SW-Core and the access
+          switches were left as access ports, only one VLAN's traffic could cross them, completely
+          defeating the purpose of VLAN segmentation. Trunk ports solve this using 802.1Q tagging.
+          As a frame crosses a trunk link, the switch inserts a 4-byte VLAN tag identifying which VLAN
+          the frame belongs to. The receiving switch reads the tag and forwards the frame into the
+          correct VLAN. All three department VLANs can share a single physical cable between switches.
         </p>
-        <h3 class="sub-title">Troubleshooting Encountered</h3>
+
+        <h3 class="sub-title">Troubleshooting: Native VLAN Mismatch</h3>
         <div class="trouble-item">
-          <h4>Native VLAN Mismatch — %CDP-4-NATIVE_VLAN_MISMATCH</h4>
-          <p>Access switches still had default native VLAN 1 while SW-Core was configured for VLAN 99. Fix: apply native VLAN 99 on all access switch uplink ports. Trunk configuration is always a two-sided commitment.</p>
+          <h4>Error: %CDP-4-NATIVE_VLAN_MISMATCH</h4>
+          <p>
+            SW-Core was configured with native VLAN 99 but the access switches still had the default
+            native VLAN 1. Both ends of a trunk must agree on the native VLAN or CDP raises this
+            warning and untagged frames are handled incorrectly. Fix: apply native VLAN 99 on all
+            access switch uplink ports as well. Trunk configuration is always a two-sided commitment.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// native vlan mismatch warning</p>
+          <img src="../assets/screenshots/native-vlan-mismatch.png" alt="Native VLAN Mismatch CDP Warning"/>
+          <p class="ss-caption">
+            CDP warning appearing on SW-Core after trunk ports were configured on one side only.
+            The error identifies which interface has the mismatch and which VLAN each side expects.
+            This pinpointed the root cause immediately and directed the fix to the access switch uplinks.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// show interfaces trunk on SW-Core</p>
+          <img src="../assets/screenshots/trunk-status-swcore.png" alt="Trunk Port Status on SW-Core"/>
+          <p class="ss-caption">
+            Output of show interfaces trunk on SW-Core after the mismatch was resolved. All trunk ports
+            show native VLAN 99, allowed VLANs include 10, 20, 30, and 99, and all VLANs are in
+            spanning tree forwarding state. This confirms trunking is working correctly on all uplinks.
+          </p>
         </div>
       </div>
 
@@ -416,15 +501,30 @@
         <p class="stage-label">// stage 03</p>
         <h3 class="stage-title">Access Port Assignment</h3>
         <p class="body-text">
-          Assigned the PC-facing port on each access switch to its correct department VLAN: PC0 → VLAN 10,
-          PC1 → VLAN 20, PC2 → VLAN 30. Each access port configured as non-trunk, belonging to exactly one VLAN.
+          Assigned the PC-facing port on each access switch to its correct department VLAN. PC0 on
+          SW-Access1 was assigned to VLAN 10. PC1 on SW-Access2 was assigned to VLAN 20. PC2 on
+          SW-Access3 was assigned to VLAN 30. Each access port was configured as a non-trunk port
+          belonging to exactly one VLAN.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          Without this step, all PCs would sit on VLAN 1 by default with no connectivity to the correct
-          department subnets. Access port assignment is what actually places each end device into its
-          logical network segment.
+          Access ports connect end devices to the network. Unlike trunk ports that carry multiple VLANs,
+          an access port belongs to exactly one VLAN. When a frame arrives on an access port, the switch
+          stamps it with that port's VLAN membership. Without this step, all PCs would sit on VLAN 1
+          by default with no connectivity to the correct department subnets. This step is what actually
+          places each end device into its logical network segment.
         </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// access port assignment on SW-Access1</p>
+          <img src="../assets/screenshots/access-port-switch0.png" alt="Access Port VLAN Assignment on SW-Access1"/>
+          <p class="ss-caption">
+            Output of show vlan brief on SW-Access1 after access port assignment. The PC-facing port
+            now appears under VLAN 10 (Management), confirming that PC0 will be logically placed in the
+            Management network segment. Trunk ports to SW-Core do not appear here because trunk ports
+            are excluded from vlan brief output.
+          </p>
+        </div>
       </div>
 
       <!-- STAGE 4 -->
@@ -432,29 +532,71 @@
         <p class="stage-label">// stage 04</p>
         <h3 class="stage-title">EtherChannel (LACP)</h3>
         <p class="body-text">
-          Bundled the two physical cables between SW-Core and each access switch into logical port channels
-          using LACP active mode on both sides. Three port channels created: Po1 (SW-Core ↔ SW-Access1),
-          Po2 (SW-Core ↔ SW-Access2), Po3 (SW-Core ↔ SW-Access3). Each configured as a trunk.
+          Bundled the two physical cables between SW-Core and each access switch into single logical
+          port channel interfaces using LACP active mode on both sides. Three port channels were created:
+          Port-channel 1 connects SW-Core to SW-Access1, Port-channel 2 to SW-Access2, and Port-channel 3
+          to SW-Access3. Each port channel was configured as a trunk carrying VLANs 10, 20, 30, and 99
+          with native VLAN 99.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          Without EtherChannel, STP would detect a loop and block one of the two links — leaving one cable
-          completely idle. EtherChannel makes STP see the bundle as a single logical link, both cables
-          actively carry traffic (doubled bandwidth), and if one fails the other continues with no reconvergence.
-          LACP was chosen as the open IEEE 802.3ad standard over Cisco's proprietary PAgP.
+          Having two separate physical links between switches without EtherChannel creates a loop.
+          Spanning Tree Protocol detects this and blocks one of the links to prevent broadcast storms,
+          leaving one cable completely idle with no bandwidth benefit and no active redundancy.
+          EtherChannel solves both problems at once. STP sees the bundle as a single logical link and
+          does not block it. Both cables actively carry traffic, effectively doubling the bandwidth between
+          switches. If one cable fails, the other continues with no downtime and no reconvergence delay.
+          LACP was chosen because it is the open IEEE 802.3ad standard, compatible across multi-vendor
+          environments unlike Cisco's proprietary PAgP.
         </p>
-        <h3 class="sub-title">Troubleshooting Encountered</h3>
+
+        <h3 class="sub-title">Troubleshooting: Multiple Issues Encountered</h3>
         <div class="trouble-item">
-          <h4>CANNOT_BUNDLE2 — VLAN Mask Mismatch</h4>
-          <p>Ports were added to channel groups before trunk config was applied to physical interfaces. Fix: configure trunk encapsulation and allowed VLANs on physical interfaces first, then assign to channel group. The port channel inherits from member ports, not the other way around.</p>
+          <h4>CANNOT_BUNDLE2: VLAN Mask Mismatch</h4>
+          <p>
+            Ports were added to channel groups before trunk configuration was applied to the physical
+            interfaces. The port channel inherits its configuration from member ports, not the other
+            way around. Fix: configure trunk encapsulation and allowed VLANs on physical interfaces
+            first, then assign them to the channel group.
+          </p>
         </div>
         <div class="trouble-item">
-          <h4>Suspended Ports — LACP Not Negotiating</h4>
-          <p>Configuration was applied to only one side at a time. LACP times out waiting for the remote end. Fix: configure both sides in quick succession.</p>
+          <h4>Suspended Ports: LACP Not Negotiating</h4>
+          <p>
+            Configuration was applied to only one side of the bundle at a time. LACP times out waiting
+            for the remote end to respond. Fix: configure both sides in quick succession so LACP can
+            complete negotiation before the timer expires.
+          </p>
         </div>
         <div class="trouble-item">
           <h4>Administratively Disabled Interfaces</h4>
-          <p>Fa0/1 and Fa0/4 on SW-Core were in shutdown state. Running no shutdown on both resolved Port-channel 1 remaining down despite full configuration.</p>
+          <p>
+            Fa0/1 and Fa0/4 on SW-Core were in a shutdown state. Port-channel 1 remained down despite
+            full configuration because its member ports were disabled. Running no shutdown on both
+            interfaces resolved the issue.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// etherchannel summary during troubleshooting</p>
+          <img src="../assets/screenshots/etherchannel-partial.png" alt="EtherChannel Summary During Troubleshooting"/>
+          <p class="ss-caption">
+            Output of show etherchannel summary during active troubleshooting. Port-channel 1 shows
+            the (SD) flag indicating the bundle is suspended and down. Member ports show flags
+            indicating they are not yet bundled. This screenshot captures the diagnostic state before
+            the disabled interfaces and LACP negotiation issues were identified and resolved.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// etherchannel summary after full resolution</p>
+          <img src="../assets/screenshots/etherchannel-final.png" alt="EtherChannel Summary After Full Resolution"/>
+          <p class="ss-caption">
+            Final output of show etherchannel summary after all three issues were resolved. All three
+            port channels (Po1, Po2, Po3) show the (SU) flag confirming Layer 2 and in use. All member
+            ports show the (P) flag confirming they are bundled and actively carrying traffic. This
+            confirms successful LACP negotiation across all three uplinks from SW-Core to the access layer.
+          </p>
         </div>
       </div>
 
@@ -463,16 +605,59 @@
         <p class="stage-label">// stage 05</p>
         <h3 class="stage-title">Inter-VLAN Routing (SVIs)</h3>
         <p class="body-text">
-          Enabled IP routing on SW-Core and created a Switched Virtual Interface per VLAN, each assigned
-          the gateway IP for its department. Static IPs assigned to each PC with their SVI as default gateway.
+          Enabled IP routing on SW-Core and created a Switched Virtual Interface for each department VLAN.
+          Each SVI was assigned the gateway IP for its VLAN and brought up with no shutdown. Static IP
+          addresses were then assigned to each PC with their respective SVI as the default gateway.
+          PC0 was assigned 192.168.10.10 with gateway 192.168.10.1. PC1 was assigned 192.168.20.10
+          with gateway 192.168.20.1. PC2 was assigned 192.168.30.10 with gateway 192.168.30.1.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          VLANs are isolated by design — a PC in VLAN 10 cannot natively reach VLAN 20. SVIs are virtual
-          Layer 3 interfaces inside the multilayer switch. Traffic destined for another VLAN hits the SVI,
-          SW-Core looks up the destination in its routing table and forwards at hardware speed. This Layer 3
-          switching approach is far more efficient than router-on-a-stick.
+          VLANs are isolated by design. A PC in VLAN 10 cannot natively send traffic to a PC in VLAN 20
+          because they are in different broadcast domains and different IP subnets. Without inter-VLAN
+          routing, Finance could not communicate with Engineering, and Management could reach no one
+          outside its own VLAN.
         </p>
+        <p class="body-text">
+          SVIs are virtual Layer 3 interfaces that live inside the multilayer switch. When a PC sends
+          traffic destined for another VLAN, it forwards the packet to its default gateway, which is
+          the SVI. SW-Core looks up the destination subnet in its routing table and forwards the packet
+          into the correct VLAN at hardware speed. This Layer 3 switching approach is far more efficient
+          than the older router-on-a-stick method, which requires traffic to leave the switch, travel
+          to a physical router, and return on the same link.
+        </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// SVI configuration on SW-Core</p>
+          <img src="../assets/screenshots/svi-config-swcore.png" alt="SVI Configuration on SW-Core"/>
+          <p class="ss-caption">
+            SVI configuration on SW-Core showing all three VLAN interfaces (VLAN 10, 20, 30) with their
+            assigned gateway IPs, each confirmed as up/up. The ip routing command is also visible here.
+            This is the command that enables Layer 3 forwarding on the multilayer switch. Without it,
+            the SVIs exist but the switch will not route between them.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// PC0 static IP configuration</p>
+          <img src="../assets/screenshots/pc0-ip-config.png" alt="PC0 IP Configuration"/>
+          <p class="ss-caption">
+            Static IP configuration on PC0 showing the assigned address 192.168.10.10, subnet mask
+            255.255.255.0, and default gateway 192.168.10.1, pointing to the VLAN 10 SVI on SW-Core.
+            This tells PC0 where to forward traffic destined for networks outside its own subnet.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// inter-VLAN ping test from PC0</p>
+          <img src="../assets/screenshots/inter-vlan-pings.png" alt="Inter-VLAN Ping Test from PC0"/>
+          <p class="ss-caption">
+            Successful pings from PC0 (192.168.10.10) to PC1 (192.168.20.10) and PC2 (192.168.30.10),
+            confirming inter-VLAN routing is working correctly. Traffic is crossing VLAN boundaries
+            through the SVIs on SW-Core. This is the first major connectivity milestone of the lab,
+            confirming all three departments can communicate with each other.
+          </p>
+        </div>
       </div>
 
       <!-- STAGE 6 -->
@@ -480,21 +665,92 @@
         <p class="stage-label">// stage 06</p>
         <h3 class="stage-title">OSPF Dynamic Routing</h3>
         <p class="body-text">
-          Configured a routed point-to-point link between SW-Core and R1 using a /30 subnet (10.0.0.0/30).
-          SW-Core Fa0/7 converted from switchport to routed interface. Both devices configured with OSPF
-          process 1 in Area 0. R1 configured to advertise a default route via default-information originate.
+          Configured a routed point-to-point link between SW-Core and R1 using the /30 subnet
+          10.0.0.0/30. SW-Core's Fa0/7 was converted from a switchport to a routed interface using
+          the no switchport command. Both devices were configured with OSPF process 1 in Area 0.
+          R1 was configured to advertise a default route to SW-Core using default-information originate.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          Without OSPF, SW-Core and R1 only know their directly connected networks. Static routes don't scale.
-          OSPF neighbor adjacency lets R1 automatically learn all three VLAN subnets from SW-Core, and SW-Core
-          learns the default route from R1 — directing all unknown traffic toward the internet. A /30 subnet
-          provides exactly two usable addresses for the point-to-point link with no waste.
+          Without a routing protocol, SW-Core and R1 only know about their directly connected networks.
+          SW-Core has no path to the internet. R1 has no knowledge of the three VLAN subnets behind it.
+          Static routes could solve this but they do not scale. Every new subnet would require a manual
+          update on every device in the network.
         </p>
-        <h3 class="sub-title">Troubleshooting Encountered</h3>
+        <p class="body-text">
+          When R1 and SW-Core form an OSPF neighbor relationship, they automatically exchange routing
+          information. R1 learns all three VLAN subnets. SW-Core learns the default route from R1,
+          directing all unknown destination traffic toward the internet. A /30 subnet was used for the
+          point-to-point link because it provides exactly two usable host addresses with no wasted space.
+          This is standard practice for router-to-router links in enterprise networks.
+        </p>
+
+        <h3 class="sub-title">Troubleshooting: Default Route Not Propagating</h3>
         <div class="trouble-item">
-          <h4>Default Route Not Propagating — Gateway of Last Resort Not Set</h4>
-          <p>default-information originate only advertises a default route if R1 itself has one. Fix: add a static default route on R1 pointing to the ISP gateway first, then OSPF advertises it to SW-Core.</p>
+          <h4>Gateway of Last Resort Not Set on SW-Core</h4>
+          <p>
+            SW-Core showed "gateway of last resort is not set" even after OSPF was fully configured.
+            The root cause was that R1 had no default route of its own to advertise. The
+            default-information originate command only works if R1 itself has a default route in its
+            routing table. Fix: add a static default route on R1 pointing toward the ISP gateway first,
+            then OSPF advertises it to SW-Core.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// OSPF configuration on SW-Core</p>
+          <img src="../assets/screenshots/ospf-swcore-config.png" alt="OSPF Configuration on SW-Core"/>
+          <p class="ss-caption">
+            OSPF configuration on SW-Core showing process 1 in Area 0. The network statements advertise
+            the three VLAN subnets and the point-to-point link subnet into OSPF. Advertising these
+            networks makes SW-Core share them with R1 so R1 knows how to route return traffic back to
+            internal hosts from the internet.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// OSPF configuration on R1</p>
+          <img src="../assets/screenshots/ospf-r1-config.png" alt="OSPF Configuration on R1"/>
+          <p class="ss-caption">
+            OSPF configuration on R1 showing process 1 in Area 0 with the default-information originate
+            command visible. The static default route pointing to the ISP gateway is also configured here,
+            which is the prerequisite for default-information originate to function. Without the static
+            default route on R1, this command produces nothing to advertise.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// OSPF neighbor adjacency</p>
+          <img src="../assets/screenshots/ospf-neighbor.png" alt="OSPF Neighbor Adjacency"/>
+          <p class="ss-caption">
+            Output of show ip ospf neighbor confirming the OSPF neighbor relationship between R1 and
+            SW-Core has reached the FULL state. FULL is the target state in OSPF, meaning both routers
+            have successfully exchanged their link-state databases and have an identical view of the
+            network. Any state other than FULL indicates a problem with the adjacency.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// routing table on SW-Core</p>
+          <img src="../assets/screenshots/routing-table-swcore.png" alt="Routing Table on SW-Core"/>
+          <p class="ss-caption">
+            Routing table on SW-Core showing the O*E2 default route learned from R1 via OSPF. The O*E2
+            designation means this is an OSPF external type 2 route, which is exactly what
+            default-information originate produces. The gateway of last resort is now set to 10.0.0.1,
+            meaning SW-Core will forward all traffic with unknown destinations toward R1 and out to
+            the internet.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// routing table on R1</p>
+          <img src="../assets/screenshots/routing-table-r1.png" alt="Routing Table on R1"/>
+          <p class="ss-caption">
+            Routing table on R1 showing all three VLAN subnets (192.168.10.0, 192.168.20.0,
+            192.168.30.0) learned via OSPF, each marked with the O designation. This confirms R1
+            knows how to reach every internal department subnet. Without these routes, R1 would drop
+            return traffic from the internet because it would have no forwarding path for it.
+          </p>
         </div>
       </div>
 
@@ -503,24 +759,59 @@
         <p class="stage-label">// stage 07</p>
         <h3 class="stage-title">NAT / PAT</h3>
         <p class="body-text">
-          Configured Port Address Translation on R1 to allow all internal hosts across all three VLANs to
-          reach the internet using R1's single public IP (203.0.113.1). A standard ACL defined the internal
-          networks eligible for translation. NAT overload applied to the WAN interface.
+          Configured Port Address Translation on R1 to allow all internal hosts across all three VLANs
+          to reach the internet using R1's single public IP (203.0.113.1). A standard ACL defined which
+          internal networks are eligible for translation. NAT overload was applied to the WAN interface.
+          Both the LAN-facing and WAN-facing interfaces were tagged as inside and outside respectively.
         </p>
         <h3 class="sub-title">Why It Matters</h3>
         <p class="body-text">
-          The 192.168.x.x VLAN subnets are RFC 1918 private addresses — not routable on the public internet.
-          NAT translates private source addresses to the router's public IP as packets leave the network.
-          PAT extends this by using port numbers to differentiate thousands of simultaneous connections
-          from different internal hosts — all sharing one public IP. This is exactly how real-world home
-          routers and corporate gateways operate.
+          The three VLAN subnets use RFC 1918 private address space (192.168.x.x). These addresses are
+          not routable on the public internet. Any ISP will drop a packet arriving with a private source
+          address. NAT translates private source addresses to the router's public IP as packets leave
+          the network. R1 tracks each active connection in a translation table, mapping the internal
+          host's private IP and port to the public IP and a unique port number. When return traffic
+          arrives, R1 consults the table and forwards it to the correct internal host.
         </p>
+        <p class="body-text">
+          PAT extends basic NAT by using unique port numbers to differentiate thousands of simultaneous
+          connections from different internal hosts, all sharing the same single public IP. This is
+          exactly how home routers and corporate gateways work in the real world.
+        </p>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// NAT configuration on R1</p>
+          <img src="../assets/screenshots/nat-config-r1.png" alt="NAT and WAN Interface Configuration on R1"/>
+          <p class="ss-caption">
+            NAT configuration on R1 showing the ACL defining eligible internal networks, the
+            ip nat inside source list command applying overload (PAT) to the WAN interface, and both
+            interfaces tagged with ip nat inside and ip nat outside. Getting the inside/outside tags on
+            the correct interfaces is critical. Reversing them is a common mistake that causes NAT to
+            silently fail with no error message.
+          </p>
+        </div>
+
+        <div class="screenshot-block">
+          <p class="ss-label">// final end-to-end ping from PC0 to internet</p>
+          <img src="../assets/screenshots/final-ping-test.png" alt="PC0 Pinging the Internet"/>
+          <p class="ss-caption">
+            Successful ping from PC0 (192.168.10.10) to the simulated internet address 203.0.113.1.
+            The TTL value in the reply is 254, decreased by exactly one hop from the starting value
+            of 255. This decrement is proof that traffic passed through R1 and was translated by NAT
+            before reaching the destination. A TTL of 255 would indicate no translation occurred.
+            This is the final end-to-end connectivity confirmation for the entire lab.
+          </p>
+        </div>
       </div>
 
       <!-- VERIFICATION -->
       <div class="section-block">
         <p class="section-num">// stage 08</p>
         <h2 class="block-title">Final Verification Matrix</h2>
+        <p class="body-text">
+          Every connectivity path in the network was tested and confirmed working. The table below
+          summarises the full test matrix.
+        </p>
         <table class="verify-table">
           <thead>
             <tr><th>Source</th><th>Destination</th><th>Result</th></tr>
@@ -532,8 +823,8 @@
             <tr><td>PC0</td><td>SW-Core uplink (10.0.0.2)</td><td class="pass">✓ Success</td></tr>
             <tr><td>PC0</td><td>R1 LAN interface (10.0.0.1)</td><td class="pass">✓ Success</td></tr>
             <tr><td>PC0</td><td>Internet (203.0.113.1)</td><td class="pass">✓ Success</td></tr>
-            <tr><td>OSPF</td><td>R1 ↔ SW-Core Adjacency</td><td class="pass">✓ FULL</td></tr>
-            <tr><td>EtherChannel</td><td>Po1, Po2, Po3</td><td class="pass">✓ SU + P</td></tr>
+            <tr><td>OSPF</td><td>R1 and SW-Core Adjacency</td><td class="pass">✓ FULL</td></tr>
+            <tr><td>EtherChannel</td><td>Po1, Po2, Po3</td><td class="pass">✓ SU and P</td></tr>
           </tbody>
         </table>
       </div>
@@ -565,7 +856,7 @@
         <div class="tools-grid">
           <div class="tool-chip">
             <div class="tool-name">Cisco Packet Tracer</div>
-            <div class="tool-use">Network simulation & CLI</div>
+            <div class="tool-use">Network simulation and CLI</div>
           </div>
           <div class="tool-chip">
             <div class="tool-name">Draw.io</div>
@@ -573,11 +864,11 @@
           </div>
           <div class="tool-chip">
             <div class="tool-name">Cisco IOS</div>
-            <div class="tool-use">Router & switch OS</div>
+            <div class="tool-use">Router and switch OS</div>
           </div>
           <div class="tool-chip">
             <div class="tool-name">GitHub</div>
-            <div class="tool-use">Documentation & hosting</div>
+            <div class="tool-use">Documentation and hosting</div>
           </div>
         </div>
       </div>
@@ -590,8 +881,8 @@
           <li><a href="https://www.cisco.com/c/en/us/training-events/training-certifications/certifications/associate/ccna.html" target="_blank">Cisco CCNA Certification</a></li>
           <li><a href="https://www.ieee802.org/3/ad/" target="_blank">IEEE 802.3ad LACP Standard</a></li>
           <li><a href="https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book.html" target="_blank">Cisco OSPF Configuration Guide</a></li>
-          <li><a href="https://tools.ietf.org/html/rfc1918" target="_blank">RFC 1918 — Private Address Space</a></li>
-          <li><a href="https://tools.ietf.org/html/rfc3022" target="_blank">RFC 3022 — Traditional IP NAT</a></li>
+          <li><a href="https://tools.ietf.org/html/rfc1918" target="_blank">RFC 1918, Private Address Space</a></li>
+          <li><a href="https://tools.ietf.org/html/rfc3022" target="_blank">RFC 3022, Traditional IP NAT</a></li>
           <li><a href="https://www.cisco.com/c/en/us/support/docs/lan-switching/etherchannel/12023-4.html" target="_blank">Cisco EtherChannel Configuration Guide</a></li>
         </ul>
       </div>
