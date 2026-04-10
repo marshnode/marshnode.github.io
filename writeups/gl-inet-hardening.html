@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GL-iNet Router Hardening — marshnode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e14;
+      --surface: #111720;
+      --border: #1e2d3d;
+      --accent: #00d4ff;
+      --accent2: #00ff9d;
+      --text: #c9d1d9;
+      --muted: #5a7a8a;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,14,20,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo { font-family: var(--mono); color: var(--accent); font-size: 1rem; letter-spacing: 0.05em; text-decoration: none; }
+    .nav-logo span { color: var(--accent2); }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav ul a {
+      font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--accent); }
+
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 7rem 2.5rem 5rem;
+    }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+      margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+    .breadcrumb a { color: var(--accent); text-decoration: none; }
+    .breadcrumb a:hover { color: #fff; }
+    .breadcrumb span { color: var(--muted); }
+
+    /* HEADER */
+    .post-header {
+      margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .post-category {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .post-title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800; color: #fff;
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    .post-meta {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;
+    }
+    .meta-tag {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+      padding: 0.25rem 0.7rem; border-radius: 3px;
+      background: rgba(0,212,255,0.08); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.2);
+    }
+    .meta-tag.green {
+      background: rgba(0,255,157,0.08); color: var(--accent2);
+      border: 1px solid rgba(0,255,157,0.2);
+    }
+    .status-badge {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+      padding: 0.25rem 0.8rem; border-radius: 20px;
+      background: rgba(0,255,157,0.1); color: var(--accent2);
+      border: 1px solid var(--accent2);
+    }
+
+    /* OVERVIEW BOX */
+    .overview-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent); border-radius: 8px;
+      padding: 1.75rem 2rem; margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s;
+    }
+    .overview-box p { font-size: 0.95rem; color: var(--text); line-height: 1.75; }
+
+    /* ENVIRONMENT TABLE */
+    .env-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.45s;
+    }
+    .env-table th {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent2); text-align: left;
+      padding: 0.6rem 1rem; border-bottom: 1px solid var(--border);
+      background: rgba(0,255,157,0.04);
+    }
+    .env-table td {
+      font-family: var(--mono); font-size: 0.82rem; color: var(--text);
+      padding: 0.6rem 1rem; border-bottom: 1px solid rgba(30,45,61,0.6);
+    }
+    .env-table td:first-child { color: var(--muted); }
+    .env-table tr:last-child td { border-bottom: none; }
+
+    /* CONTENT SECTIONS */
+    .content {
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s;
+    }
+
+    .section-block { margin-bottom: 3rem; }
+
+    .section-num {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+
+    h2.block-title {
+      font-size: 1.3rem; font-weight: 700; color: #fff;
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3.sub-title {
+      font-family: var(--mono); font-size: 0.85rem; color: var(--accent2);
+      letter-spacing: 0.1em; margin: 1.25rem 0 0.6rem;
+      text-transform: uppercase;
+    }
+
+    p.body-text {
+      font-size: 0.92rem; color: var(--text); line-height: 1.8; margin-bottom: 1rem;
+    }
+
+    /* STEPS LIST */
+    .steps-list { list-style: none; margin: 0.75rem 0 1rem; }
+    .steps-list li {
+      font-size: 0.88rem; color: var(--text); line-height: 1.7;
+      padding: 0.35rem 0 0.35rem 1.5rem; position: relative;
+    }
+    .steps-list li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--accent); font-family: var(--mono);
+    }
+
+    /* INCIDENT BLOCK */
+    .incident-card {
+      background: rgba(255,60,60,0.04); border: 1px solid rgba(255,80,80,0.2);
+      border-left: 4px solid #ff4444; border-radius: 8px;
+      padding: 1.5rem 1.75rem; margin: 1.5rem 0;
+    }
+    .incident-card .incident-label {
+      font-family: var(--mono); font-size: 0.65rem; color: #ff6666;
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .incident-card p { font-size: 0.88rem; color: var(--text); line-height: 1.75; }
+
+    /* DIAGNOSIS STEPS */
+    .diag-step {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .diag-num {
+      font-family: var(--mono); font-size: 0.75rem; color: var(--accent);
+      background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 4px; padding: 0.15rem 0.5rem; white-space: nowrap; flex-shrink: 0;
+    }
+    .diag-content h4 {
+      font-family: var(--mono); font-size: 0.78rem; color: #fff; margin-bottom: 0.3rem;
+    }
+    .diag-content p { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+
+    /* LESSONS */
+    .lessons-list { list-style: none; margin: 0; }
+    .lessons-list li {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+      font-size: 0.88rem; color: var(--text); line-height: 1.7;
+      padding-left: 1.25rem; position: relative;
+    }
+    .lessons-list li::before {
+      content: '✓'; position: absolute; left: -1px; top: 0;
+      font-family: var(--mono); font-size: 0.75rem; color: var(--accent2);
+      background: rgba(0,255,157,0.1); border-right: 1px solid var(--border);
+      border-radius: 6px 0 0 6px; padding: 1rem 0.5rem;
+    }
+    .lessons-list li { padding-left: 2.5rem; }
+
+    /* SKILLS GRID */
+    .skills-grid {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;
+    }
+    .skill-chip {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+      padding: 0.3rem 0.75rem; border-radius: 3px;
+      background: rgba(0,212,255,0.06); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.18);
+    }
+
+    /* REFERENCES */
+    .ref-list { list-style: none; margin-top: 0.75rem; }
+    .ref-list li { margin-bottom: 0.5rem; }
+    .ref-list a {
+      font-family: var(--mono); font-size: 0.78rem; color: var(--accent);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .ref-list a:hover { color: var(--accent2); }
+    .ref-list a::before { content: '→ '; }
+
+    /* BACK BUTTON */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.65rem 1.5rem; border-radius: 4px;
+      border: 1px solid var(--border); color: var(--text); background: transparent;
+      text-decoration: none; transition: all 0.2s; margin-top: 3rem;
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      position: relative; z-index: 1; text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border); font-family: var(--mono);
+      font-size: 0.72rem; color: var(--muted); margin-top: 4rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { gap: 0.75rem; }
+      .page-wrap { padding: 6rem 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="nav-logo">&lt;<span>marshnode</span> /&gt;</a>
+    <ul>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+
+    <div class="breadcrumb">
+      <a href="../index.html">marshnode.github.io</a>
+      <span>/</span>
+      <a href="#">writeups</a>
+      <span>/</span>
+      <span>gl-inet-hardening</span>
+    </div>
+
+    <div class="post-header">
+      <p class="post-category">// Network Security · Home Lab · Firewall Configuration</p>
+      <h1 class="post-title">GL-iNet Flint 2 Router Hardening &amp; Troubleshooting</h1>
+      <div class="post-meta">
+        <span class="meta-tag">GL-MT6000</span>
+        <span class="meta-tag">OpenWrt</span>
+        <span class="meta-tag">Firewall</span>
+        <span class="meta-tag">DNS over HTTPS</span>
+        <span class="meta-tag">Security Hardening</span>
+        <span class="status-badge">✓ Completed</span>
+      </div>
+    </div>
+
+    <div class="overview-box">
+      <p>
+        Security hardening of a GL-iNet Flint 2 router running OpenWrt firmware — restricting admin access,
+        encrypting DNS traffic, and implementing custom firewall rules to reduce the attack surface.
+        Also documents a real-world troubleshooting case study where a misconfigured firewall rule caused
+        full DHCP failure across the network, requiring systematic diagnosis and recovery.
+      </p>
+    </div>
+
+    <table class="env-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Device</td><td>GL-iNet Flint 2 (GL-MT6000)</td></tr>
+        <tr><td>Firmware</td><td>OpenWrt (latest stable)</td></tr>
+        <tr><td>Admin Access</td><td>HTTPS via 192.168.8.1</td></tr>
+        <tr><td>DNS Provider</td><td>Cloudflare (1.1.1.1 / 1.0.0.1)</td></tr>
+        <tr><td>Network</td><td>Home LAN with multiple connected devices</td></tr>
+      </tbody>
+    </table>
+
+    <div class="content">
+
+      <!-- OBJECTIVES -->
+      <div class="section-block">
+        <p class="section-num">// objectives</p>
+        <h2 class="block-title">What This Lab Covers</h2>
+        <ul class="steps-list">
+          <li>Restrict router admin panel to HTTPS only</li>
+          <li>Encrypt all DNS queries using DNS over HTTPS (DoH)</li>
+          <li>Enable DNS rebinding protection to prevent DNS-based attacks</li>
+          <li>Implement custom firewall rules to control inbound and outbound traffic</li>
+          <li>Document and recover from a self-caused network misconfiguration</li>
+        </ul>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="section-block">
+        <p class="section-num">// hardening · step 01</p>
+        <h2 class="block-title">Enforcing HTTPS-Only Admin Access</h2>
+        <p class="body-text">
+          By default, the GL-iNet admin panel is accessible over both HTTP and HTTPS. Allowing unencrypted
+          HTTP access means admin credentials could be intercepted on the local network.
+        </p>
+        <h3 class="sub-title">What I Did</h3>
+        <ul class="steps-list">
+          <li>Logged into the admin panel at 192.168.8.1</li>
+          <li>Navigated to System → Administration</li>
+          <li>Disabled HTTP access and enforced HTTPS only</li>
+          <li>Verified that navigating to http://192.168.8.1 no longer loaded the panel and redirected to HTTPS</li>
+        </ul>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Even on a home network, enforcing HTTPS ensures admin credentials are never transmitted in plaintext.
+          This is especially important if the network has multiple users or guest devices.
+        </p>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="section-block">
+        <p class="section-num">// hardening · step 02</p>
+        <h2 class="block-title">Configuring Cloudflare DNS over HTTPS</h2>
+        <p class="body-text">
+          Standard DNS queries are sent in plaintext over UDP port 53, meaning your ISP or anyone on the network
+          can see every domain you look up. DNS over HTTPS encrypts these queries inside HTTPS traffic.
+        </p>
+        <h3 class="sub-title">What I Did</h3>
+        <ul class="steps-list">
+          <li>Navigated to Network → DNS in the OpenWrt admin panel</li>
+          <li>Disabled the default ISP-assigned DNS servers</li>
+          <li>Configured Cloudflare's DoH endpoints: Primary https://1.1.1.1/dns-query · Secondary https://1.0.0.1/dns-query</li>
+          <li>Enabled the DoH client within OpenWrt</li>
+          <li>Verified DNS resolution was functioning correctly after changes</li>
+        </ul>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Encrypting DNS traffic prevents ISP-level DNS snooping and protects against DNS hijacking attacks
+          where malicious actors redirect traffic by intercepting DNS queries.
+        </p>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="section-block">
+        <p class="section-num">// hardening · step 03</p>
+        <h2 class="block-title">Enabling DNS Rebinding Protection</h2>
+        <p class="body-text">
+          DNS rebinding is an attack technique where a malicious website causes a victim's browser to make requests to internal network resources, such as a router admin panel, by manipulating DNS responses.
+        </p>
+        <h3 class="sub-title">What I Did</h3>
+        <ul class="steps-list">
+          <li>Located the DNS rebinding protection setting under Network → DNS</li>
+          <li>Enabled rebinding protection in OpenWrt</li>
+          <li>Configured the router to reject DNS responses that resolve public domain names to private IP ranges (RFC 1918: 10.x.x.x, 172.16.x.x, 192.168.x.x)</li>
+        </ul>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Without this protection, an attacker could craft a malicious website that tricks the browser into attacking devices on the local network, including the router itself.
+        </p>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="section-block">
+        <p class="section-num">// hardening · step 04</p>
+        <h2 class="block-title">Custom Firewall Rules</h2>
+        <p class="body-text">
+          After completing the above hardening steps, additional firewall rules were implemented through
+          the OpenWrt firewall configuration to further restrict unnecessary traffic and tighten the network perimeter.
+          Rules were applied via SSH into the router using UCI commands directly in the OpenWrt shell.
+        </p>
+        <h3 class="sub-title">Rules Implemented</h3>
+        <ul class="steps-list">
+          <li>Blocked unsolicited inbound traffic from WAN to LAN</li>
+          <li>Restricted admin panel access to specific trusted devices on the LAN</li>
+          <li>Configured logging for dropped packets to assist with future monitoring</li>
+          <li>Set default policies: WAN input = DROP · WAN forward = DROP · LAN = ACCEPT</li>
+        </ul>
+        <h3 class="sub-title">Screenshot: UCI Firewall Rule via SSH</h3>
+        <div style="margin-top:0.75rem; border:1px solid var(--border); border-radius:8px; overflow:hidden;">
+          <img src="../assets/screenshots/flint2.png" alt="UCI firewall rule configuration via SSH on GL-MT6000" style="width:100%; display:block;"/>
+        </div>
+        <p style="font-family:var(--mono); font-size:0.68rem; color:var(--muted); margin-top:0.5rem;">
+          SSH session into OpenWrt root shell. UCI commands creating the Block HTTP Admin firewall rule, committing, and restarting the firewall service.
+        </p>
+      </div>
+
+      <!-- INCIDENT REPORT -->
+      <div class="section-block">
+        <p class="section-num">// incident report</p>
+        <h2 class="block-title">Self-Caused DHCP Failure</h2>
+
+        <div class="incident-card">
+          <p class="incident-label">⚠ Incident Summary</p>
+          <p>
+            While implementing a custom firewall rule to restrict inbound traffic, a rule was accidentally
+            introduced that blocked DHCP traffic on the LAN interface. Within minutes, connected devices
+            began losing their IP addresses and were unable to obtain new leases. The network went down completely.
+          </p>
+        </div>
+
+        <h3 class="sub-title">Impact</h3>
+        <ul class="steps-list">
+          <li>All devices on the LAN lost internet connectivity</li>
+          <li>New devices were unable to connect to the network</li>
+          <li>Router admin panel was briefly inaccessible due to IP loss on the client machine</li>
+        </ul>
+
+        <h3 class="sub-title">Diagnosis Process</h3>
+
+        <div class="diag-step">
+          <span class="diag-num">STEP 01</span>
+          <div class="diag-content">
+            <h4>Identify the Symptom</h4>
+            <p>Devices showed "No IP address" or self-assigned 169.254.x.x APIPA addresses, which immediately indicated DHCP failure rather than a routing or WAN issue.</p>
+          </div>
+        </div>
+
+        <div class="diag-step">
+          <span class="diag-num">STEP 02</span>
+          <div class="diag-content">
+            <h4>Isolate the Cause</h4>
+            <p>Connected a device directly via ethernet and attempted a manual static IP assignment, which succeeded. Confirmed the router was functional but DHCP leasing was broken.</p>
+          </div>
+        </div>
+
+        <div class="diag-step">
+          <span class="diag-num">STEP 03</span>
+          <div class="diag-content">
+            <h4>Access the Router</h4>
+            <p>Assigned a static IP manually in the 192.168.8.x range to regain access to the admin panel at 192.168.8.1 without needing a DHCP lease.</p>
+          </div>
+        </div>
+
+        <div class="diag-step">
+          <span class="diag-num">STEP 04</span>
+          <div class="diag-content">
+            <h4>Review Firewall Rules</h4>
+            <p>Reviewed recently applied rules inside OpenWrt firewall config. Identified a rule incorrectly blocking UDP port 67 and 68, the ports used by DHCP for server and client communication.</p>
+          </div>
+        </div>
+
+        <div class="diag-step">
+          <span class="diag-num">STEP 05</span>
+          <div class="diag-content">
+            <h4>Fix and Verify</h4>
+            <p>Removed the offending rule, restarted the DHCP service, and verified that devices began obtaining IP addresses correctly. Full connectivity restored within minutes.</p>
+          </div>
+        </div>
+
+        <h3 class="sub-title">Root Cause</h3>
+        <p class="body-text">
+          The firewall rule was written too broadly. The intent was to block unsolicited inbound traffic from
+          external sources, but the rule inadvertently applied to internal LAN traffic as well, blocking the
+          DHCP broadcast packets that devices use to request IP addresses.
+        </p>
+
+        <h3 class="sub-title">Fix Applied</h3>
+        <p class="body-text">
+          Rewrote the rule with a narrower scope, explicitly specifying the WAN interface as the target rather
+          than applying it globally. Added an explicit ACCEPT rule for DHCP traffic on the LAN interface to
+          prevent similar issues in the future.
+        </p>
+      </div>
+
+      <!-- LESSONS -->
+      <div class="section-block">
+        <p class="section-num">// key takeaways</p>
+        <h2 class="block-title">Lessons Learned</h2>
+        <ul class="lessons-list">
+          <li>Always scope firewall rules precisely. A rule that is too broad can have unintended consequences across multiple services and interfaces.</li>
+          <li>Know your recovery path before applying changes. Having a plan to access the router via static IP saved significant time during recovery.</li>
+          <li>DHCP runs on UDP 67/68. Blocking these ports on the wrong interface will silently kill all dynamic IP assignment on the network.</li>
+          <li>Test in stages. Applying multiple firewall rules at once makes it harder to identify which rule caused a problem. Apply and verify one at a time.</li>
+          <li>Document as you go. The troubleshooting process was faster because I knew exactly what changes had been made and in what order.</li>
+        </ul>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="section-block">
+        <p class="section-num">// skills demonstrated</p>
+        <h2 class="block-title">Skills Demonstrated</h2>
+        <div class="skills-grid">
+          <span class="skill-chip">OpenWrt Firewall Config</span>
+          <span class="skill-chip">DNS over HTTPS (DoH)</span>
+          <span class="skill-chip">DNS Rebinding Mitigation</span>
+          <span class="skill-chip">Network Troubleshooting</span>
+          <span class="skill-chip">DHCP Protocol (UDP 67/68)</span>
+          <span class="skill-chip">Static IP Assignment</span>
+          <span class="skill-chip">Security Hardening</span>
+          <span class="skill-chip">Incident Recovery</span>
+        </div>
+      </div>
+
+      <!-- REFERENCES -->
+      <div class="section-block">
+        <p class="section-num">// references</p>
+        <h2 class="block-title">References</h2>
+        <ul class="ref-list">
+          <li><a href="https://openwrt.org/docs/guide-user/firewall/firewall_configuration" target="_blank">OpenWrt Firewall Documentation</a></li>
+          <li><a href="https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/" target="_blank">Cloudflare DNS over HTTPS</a></li>
+          <li><a href="https://docs.gl-inet.com/router/en/4/guides/gl-mt6000/" target="_blank">GL-iNet Flint 2 Documentation</a></li>
+          <li><a href="https://owasp.org/www-community/attacks/DNS_Rebinding" target="_blank">DNS Rebinding Attack, OWASP</a></li>
+        </ul>
+      </div>
+
+      <a href="../index.html#projects" class="back-btn">← Back to Projects</a>
+
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Marshall Kunguma — marshnode.github.io
+  </footer>
+
+</body>
+</html>

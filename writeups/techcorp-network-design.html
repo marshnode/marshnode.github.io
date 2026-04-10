@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechCorp HQ Network Design — marshnode</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0e14;
+      --surface: #111720;
+      --border: #1e2d3d;
+      --accent: #00d4ff;
+      --accent2: #00ff9d;
+      --text: #c9d1d9;
+      --muted: #5a7a8a;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,14,20,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo { font-family: var(--mono); color: var(--accent); font-size: 1rem; letter-spacing: 0.05em; text-decoration: none; }
+    .nav-logo span { color: var(--accent2); }
+    nav ul { list-style: none; display: flex; gap: 1.5rem; }
+    nav ul a {
+      font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--accent); }
+
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 7rem 2.5rem 5rem;
+    }
+
+    .breadcrumb {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+      margin-bottom: 2.5rem; display: flex; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+    .breadcrumb a { color: var(--accent); text-decoration: none; }
+    .breadcrumb a:hover { color: #fff; }
+    .breadcrumb span { color: var(--muted); }
+
+    .post-header {
+      margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+    .post-category {
+      font-family: var(--mono); font-size: 0.7rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .post-title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800; color: #fff;
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    .post-meta {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem;
+    }
+    .meta-tag {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+      padding: 0.25rem 0.7rem; border-radius: 3px;
+      background: rgba(0,212,255,0.08); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.2);
+    }
+    .status-badge {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+      padding: 0.25rem 0.8rem; border-radius: 20px;
+      background: rgba(0,255,157,0.1); color: var(--accent2);
+      border: 1px solid var(--accent2);
+    }
+
+    .overview-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent); border-radius: 8px;
+      padding: 1.75rem 2rem; margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.35s;
+    }
+    .overview-box p { font-size: 0.95rem; color: var(--text); line-height: 1.75; }
+
+    /* TABLES */
+    .data-table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem;
+      font-family: var(--mono); font-size: 0.78rem;
+    }
+    .data-table th {
+      font-size: 0.63rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent2); text-align: left; padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--border); background: rgba(0,255,157,0.04);
+    }
+    .data-table td {
+      color: var(--text); padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid rgba(30,45,61,0.6);
+    }
+    .data-table td:first-child { color: var(--muted); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .content {
+      opacity: 0; animation: fadeUp 0.6s ease forwards 0.5s;
+    }
+
+    .section-block { margin-bottom: 3rem; }
+
+    .section-num {
+      font-family: var(--mono); font-size: 0.65rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+
+    h2.block-title {
+      font-size: 1.3rem; font-weight: 700; color: #fff;
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3.sub-title {
+      font-family: var(--mono); font-size: 0.85rem; color: var(--accent2);
+      letter-spacing: 0.1em; margin: 1.25rem 0 0.6rem;
+      text-transform: uppercase;
+    }
+
+    p.body-text {
+      font-size: 0.92rem; color: var(--text); line-height: 1.8; margin-bottom: 1rem;
+    }
+
+    .steps-list { list-style: none; margin: 0.75rem 0 1rem; }
+    .steps-list li {
+      font-size: 0.88rem; color: var(--text); line-height: 1.7;
+      padding: 0.35rem 0 0.35rem 1.5rem; position: relative;
+    }
+    .steps-list li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--accent); font-family: var(--mono);
+    }
+
+    /* STAGE HEADER */
+    .stage-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px;
+      padding: 1.5rem 1.75rem; margin-bottom: 2.5rem;
+    }
+    .stage-label {
+      font-family: var(--mono); font-size: 0.62rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .stage-title {
+      font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;
+    }
+
+    /* TROUBLESHOOTING CARDS */
+    .trouble-item {
+      background: rgba(255,180,0,0.03); border: 1px solid rgba(255,180,0,0.15);
+      border-left: 3px solid #ffb400; border-radius: 6px;
+      padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+    }
+    .trouble-item h4 {
+      font-family: var(--mono); font-size: 0.75rem; color: #ffb400;
+      margin-bottom: 0.4rem; letter-spacing: 0.05em;
+    }
+    .trouble-item p { font-size: 0.84rem; color: var(--text); line-height: 1.65; }
+
+    /* VERIFICATION MATRIX */
+    .verify-table {
+      width: 100%; border-collapse: collapse; margin: 1rem 0;
+      font-family: var(--mono); font-size: 0.78rem;
+    }
+    .verify-table th {
+      font-size: 0.63rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent2); text-align: left; padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--border); background: rgba(0,255,157,0.04);
+    }
+    .verify-table td {
+      color: var(--text); padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid rgba(30,45,61,0.6);
+    }
+    .verify-table tr:last-child td { border-bottom: none; }
+    .pass { color: var(--accent2); }
+
+    /* SKILLS */
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .skill-chip {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+      padding: 0.3rem 0.75rem; border-radius: 3px;
+      background: rgba(0,212,255,0.06); color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.18);
+    }
+
+    /* TOOLS TABLE */
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .tool-chip {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.75rem 1rem;
+    }
+    .tool-chip .tool-name { font-family: var(--mono); font-size: 0.78rem; color: var(--accent); margin-bottom: 0.2rem; }
+    .tool-chip .tool-use { font-size: 0.72rem; color: var(--muted); }
+
+    /* REFS */
+    .ref-list { list-style: none; margin-top: 0.75rem; }
+    .ref-list li { margin-bottom: 0.5rem; }
+    .ref-list a {
+      font-family: var(--mono); font-size: 0.78rem; color: var(--accent);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .ref-list a:hover { color: var(--accent2); }
+    .ref-list a::before { content: '→ '; }
+
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.65rem 1.5rem; border-radius: 4px;
+      border: 1px solid var(--border); color: var(--text); background: transparent;
+      text-decoration: none; transition: all 0.2s; margin-top: 3rem;
+    }
+    .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      position: relative; z-index: 1; text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border); font-family: var(--mono);
+      font-size: 0.72rem; color: var(--muted); margin-top: 4rem;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      nav ul { gap: 0.75rem; }
+      .page-wrap { padding: 6rem 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="nav-logo">&lt;<span>marshnode</span> /&gt;</a>
+    <ul>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#skills">Skills</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+
+    <div class="breadcrumb">
+      <a href="../index.html">marshnode.github.io</a>
+      <span>/</span>
+      <a href="#">writeups</a>
+      <span>/</span>
+      <span>techcorp-network-design</span>
+    </div>
+
+    <div class="post-header">
+      <p class="post-category">// Network Engineering · Enterprise Design · CCNA Level Lab</p>
+      <h1 class="post-title">TechCorp HQ Enterprise Network Design</h1>
+      <div class="post-meta">
+        <span class="meta-tag">Cisco Packet Tracer</span>
+        <span class="meta-tag">VLANs</span>
+        <span class="meta-tag">OSPF</span>
+        <span class="meta-tag">EtherChannel</span>
+        <span class="meta-tag">NAT/PAT</span>
+        <span class="meta-tag">Cisco IOS</span>
+        <span class="status-badge">✓ Completed</span>
+      </div>
+    </div>
+
+    <div class="overview-box">
+      <p>
+        Full design, build, and verification of an enterprise network for a fictional company — TechCorp HQ.
+        Starting from a blank Packet Tracer canvas, the topology was designed, every device cabled, every
+        protocol configured, and end-to-end connectivity verified across all three departments. A CCNA-level
+        lab mirroring real-world infrastructure, with every configuration decision documented alongside the
+        reasoning behind it — not just the commands.
+      </p>
+    </div>
+
+    <div class="content">
+
+      <!-- BUSINESS REQUIREMENTS -->
+      <div class="section-block">
+        <p class="section-num">// requirements</p>
+        <h2 class="block-title">Business Requirements</h2>
+        <p class="body-text">TechCorp HQ has three departments requiring isolated but interconnected network segments:</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Department</th><th>VLAN</th><th>Subnet</th><th>Gateway</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Management</td><td>10</td><td>192.168.10.0/24</td><td>192.168.10.1</td></tr>
+            <tr><td>Engineering</td><td>20</td><td>192.168.20.0/24</td><td>192.168.20.1</td></tr>
+            <tr><td>Finance</td><td>30</td><td>192.168.30.0/24</td><td>192.168.30.1</td></tr>
+            <tr><td>Native/Trunk</td><td>99</td><td>N/A</td><td>N/A</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TOPOLOGY -->
+      <div class="section-block">
+        <p class="section-num">// topology</p>
+        <h2 class="block-title">Network Topology</h2>
+        <p class="body-text">The network follows a three-tier hierarchical model:</p>
+        <ul class="steps-list">
+          <li><strong style="color:#fff;">Edge Router (R1):</strong> Cisco 2911. Handles NAT/PAT and OSPF routing toward the internet.</li>
+          <li><strong style="color:#fff;">Core Switch (SW-Core):</strong> Cisco 3560 multilayer switch. Handles inter-VLAN routing and OSPF.</li>
+          <li><strong style="color:#fff;">Access Switches (SW-Access1/2/3):</strong> Cisco 2960 Layer 2 switches. Connect end devices to their VLANs.</li>
+        </ul>
+        <p class="body-text" style="margin-top:0.75rem;">
+          Each access switch connects to the core via two physical cables bundled into a single logical
+          EtherChannel link using LACP for redundancy and increased bandwidth.
+        </p>
+
+        <h3 class="sub-title">IP Addressing</h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Device</th><th>Interface</th><th>IP Address</th><th>Role</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>R1</td><td>Gig0/0</td><td>10.0.0.1/30</td><td>Link to SW-Core</td></tr>
+            <tr><td>R1</td><td>Gig0/1</td><td>203.0.113.1/24</td><td>WAN internet facing</td></tr>
+            <tr><td>SW-Core</td><td>Fa0/7</td><td>10.0.0.2/30</td><td>Routed uplink to R1</td></tr>
+            <tr><td>SW-Core</td><td>VLAN 10 SVI</td><td>192.168.10.1/24</td><td>Gateway — Management</td></tr>
+            <tr><td>SW-Core</td><td>VLAN 20 SVI</td><td>192.168.20.1/24</td><td>Gateway — Engineering</td></tr>
+            <tr><td>SW-Core</td><td>VLAN 30 SVI</td><td>192.168.30.1/24</td><td>Gateway — Finance</td></tr>
+            <tr><td>PC0</td><td>Fa0</td><td>192.168.10.10/24</td><td>Management host</td></tr>
+            <tr><td>PC1</td><td>Fa0</td><td>192.168.20.10/24</td><td>Engineering host</td></tr>
+            <tr><td>PC2</td><td>Fa0</td><td>192.168.30.10/24</td><td>Finance host</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- STAGE 1 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 01</p>
+        <h3 class="stage-title">VLAN Creation</h3>
+        <p class="body-text">
+          Created four VLANs on every switch: Management (10), Engineering (20), Finance (30), and Native (99).
+          Applied on SW-Core and all three access switches.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Without VLANs, every device shares the same broadcast domain — every ARP request and DHCP broadcast
+          goes to every device, degrading performance and creating security risks. Finance traffic would be
+          visible to Engineering. VLANs contain traffic within each department at Layer 2.
+        </p>
+        <p class="body-text">
+          VLAN 99 was designated as the native VLAN. Best practice is to move the native VLAN away from the
+          default VLAN 1, which is a known vector for VLAN hopping attacks.
+        </p>
+      </div>
+
+      <!-- STAGE 2 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 02</p>
+        <h3 class="stage-title">Trunk Ports (802.1Q)</h3>
+        <p class="body-text">
+          Configured uplink ports between SW-Core and each access switch as 802.1Q trunk ports on both ends.
+          Every trunk allows VLANs 10, 20, 30, and 99 with native VLAN 99.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          A standard access port carries only one VLAN. Without trunking, only one VLAN's traffic could cross
+          the uplinks, defeating the purpose of VLAN segmentation. 802.1Q tagging inserts a 4-byte VLAN tag
+          into each Ethernet frame so all three department VLANs can share a single physical cable.
+        </p>
+        <h3 class="sub-title">Troubleshooting Encountered</h3>
+        <div class="trouble-item">
+          <h4>Native VLAN Mismatch — %CDP-4-NATIVE_VLAN_MISMATCH</h4>
+          <p>Access switches still had default native VLAN 1 while SW-Core was configured for VLAN 99. Fix: apply native VLAN 99 on all access switch uplink ports. Trunk configuration is always a two-sided commitment.</p>
+        </div>
+      </div>
+
+      <!-- STAGE 3 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 03</p>
+        <h3 class="stage-title">Access Port Assignment</h3>
+        <p class="body-text">
+          Assigned the PC-facing port on each access switch to its correct department VLAN: PC0 → VLAN 10,
+          PC1 → VLAN 20, PC2 → VLAN 30. Each access port configured as non-trunk, belonging to exactly one VLAN.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Without this step, all PCs would sit on VLAN 1 by default with no connectivity to the correct
+          department subnets. Access port assignment is what actually places each end device into its
+          logical network segment.
+        </p>
+      </div>
+
+      <!-- STAGE 4 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 04</p>
+        <h3 class="stage-title">EtherChannel (LACP)</h3>
+        <p class="body-text">
+          Bundled the two physical cables between SW-Core and each access switch into logical port channels
+          using LACP active mode on both sides. Three port channels created: Po1 (SW-Core ↔ SW-Access1),
+          Po2 (SW-Core ↔ SW-Access2), Po3 (SW-Core ↔ SW-Access3). Each configured as a trunk.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Without EtherChannel, STP would detect a loop and block one of the two links — leaving one cable
+          completely idle. EtherChannel makes STP see the bundle as a single logical link, both cables
+          actively carry traffic (doubled bandwidth), and if one fails the other continues with no reconvergence.
+          LACP was chosen as the open IEEE 802.3ad standard over Cisco's proprietary PAgP.
+        </p>
+        <h3 class="sub-title">Troubleshooting Encountered</h3>
+        <div class="trouble-item">
+          <h4>CANNOT_BUNDLE2 — VLAN Mask Mismatch</h4>
+          <p>Ports were added to channel groups before trunk config was applied to physical interfaces. Fix: configure trunk encapsulation and allowed VLANs on physical interfaces first, then assign to channel group. The port channel inherits from member ports, not the other way around.</p>
+        </div>
+        <div class="trouble-item">
+          <h4>Suspended Ports — LACP Not Negotiating</h4>
+          <p>Configuration was applied to only one side at a time. LACP times out waiting for the remote end. Fix: configure both sides in quick succession.</p>
+        </div>
+        <div class="trouble-item">
+          <h4>Administratively Disabled Interfaces</h4>
+          <p>Fa0/1 and Fa0/4 on SW-Core were in shutdown state. Running no shutdown on both resolved Port-channel 1 remaining down despite full configuration.</p>
+        </div>
+      </div>
+
+      <!-- STAGE 5 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 05</p>
+        <h3 class="stage-title">Inter-VLAN Routing (SVIs)</h3>
+        <p class="body-text">
+          Enabled IP routing on SW-Core and created a Switched Virtual Interface per VLAN, each assigned
+          the gateway IP for its department. Static IPs assigned to each PC with their SVI as default gateway.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          VLANs are isolated by design — a PC in VLAN 10 cannot natively reach VLAN 20. SVIs are virtual
+          Layer 3 interfaces inside the multilayer switch. Traffic destined for another VLAN hits the SVI,
+          SW-Core looks up the destination in its routing table and forwards at hardware speed. This Layer 3
+          switching approach is far more efficient than router-on-a-stick.
+        </p>
+      </div>
+
+      <!-- STAGE 6 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 06</p>
+        <h3 class="stage-title">OSPF Dynamic Routing</h3>
+        <p class="body-text">
+          Configured a routed point-to-point link between SW-Core and R1 using a /30 subnet (10.0.0.0/30).
+          SW-Core Fa0/7 converted from switchport to routed interface. Both devices configured with OSPF
+          process 1 in Area 0. R1 configured to advertise a default route via default-information originate.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          Without OSPF, SW-Core and R1 only know their directly connected networks. Static routes don't scale.
+          OSPF neighbor adjacency lets R1 automatically learn all three VLAN subnets from SW-Core, and SW-Core
+          learns the default route from R1 — directing all unknown traffic toward the internet. A /30 subnet
+          provides exactly two usable addresses for the point-to-point link with no waste.
+        </p>
+        <h3 class="sub-title">Troubleshooting Encountered</h3>
+        <div class="trouble-item">
+          <h4>Default Route Not Propagating — Gateway of Last Resort Not Set</h4>
+          <p>default-information originate only advertises a default route if R1 itself has one. Fix: add a static default route on R1 pointing to the ISP gateway first, then OSPF advertises it to SW-Core.</p>
+        </div>
+      </div>
+
+      <!-- STAGE 7 -->
+      <div class="stage-card">
+        <p class="stage-label">// stage 07</p>
+        <h3 class="stage-title">NAT / PAT</h3>
+        <p class="body-text">
+          Configured Port Address Translation on R1 to allow all internal hosts across all three VLANs to
+          reach the internet using R1's single public IP (203.0.113.1). A standard ACL defined the internal
+          networks eligible for translation. NAT overload applied to the WAN interface.
+        </p>
+        <h3 class="sub-title">Why It Matters</h3>
+        <p class="body-text">
+          The 192.168.x.x VLAN subnets are RFC 1918 private addresses — not routable on the public internet.
+          NAT translates private source addresses to the router's public IP as packets leave the network.
+          PAT extends this by using port numbers to differentiate thousands of simultaneous connections
+          from different internal hosts — all sharing one public IP. This is exactly how real-world home
+          routers and corporate gateways operate.
+        </p>
+      </div>
+
+      <!-- VERIFICATION -->
+      <div class="section-block">
+        <p class="section-num">// stage 08</p>
+        <h2 class="block-title">Final Verification Matrix</h2>
+        <table class="verify-table">
+          <thead>
+            <tr><th>Source</th><th>Destination</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>PC0 (192.168.10.10)</td><td>PC1 (192.168.20.10)</td><td class="pass">✓ Success</td></tr>
+            <tr><td>PC0 (192.168.10.10)</td><td>PC2 (192.168.30.10)</td><td class="pass">✓ Success</td></tr>
+            <tr><td>PC0</td><td>VLAN 10 Gateway (192.168.10.1)</td><td class="pass">✓ Success</td></tr>
+            <tr><td>PC0</td><td>SW-Core uplink (10.0.0.2)</td><td class="pass">✓ Success</td></tr>
+            <tr><td>PC0</td><td>R1 LAN interface (10.0.0.1)</td><td class="pass">✓ Success</td></tr>
+            <tr><td>PC0</td><td>Internet (203.0.113.1)</td><td class="pass">✓ Success</td></tr>
+            <tr><td>OSPF</td><td>R1 ↔ SW-Core Adjacency</td><td class="pass">✓ FULL</td></tr>
+            <tr><td>EtherChannel</td><td>Po1, Po2, Po3</td><td class="pass">✓ SU + P</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="section-block">
+        <p class="section-num">// skills demonstrated</p>
+        <h2 class="block-title">Skills Demonstrated</h2>
+        <div class="skills-grid">
+          <span class="skill-chip">Enterprise Topology Design</span>
+          <span class="skill-chip">VLAN Segmentation</span>
+          <span class="skill-chip">802.1Q Trunking</span>
+          <span class="skill-chip">EtherChannel LACP</span>
+          <span class="skill-chip">Inter-VLAN Routing (SVIs)</span>
+          <span class="skill-chip">OSPF Dynamic Routing</span>
+          <span class="skill-chip">NAT / PAT</span>
+          <span class="skill-chip">/30 Point-to-Point Links</span>
+          <span class="skill-chip">Cisco IOS CLI</span>
+          <span class="skill-chip">Systematic Troubleshooting</span>
+          <span class="skill-chip">Packet Tracer Simulation</span>
+          <span class="skill-chip">Draw.io Topology Diagrams</span>
+        </div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="section-block">
+        <p class="section-num">// tools used</p>
+        <h2 class="block-title">Tools</h2>
+        <div class="tools-grid">
+          <div class="tool-chip">
+            <div class="tool-name">Cisco Packet Tracer</div>
+            <div class="tool-use">Network simulation & CLI</div>
+          </div>
+          <div class="tool-chip">
+            <div class="tool-name">Draw.io</div>
+            <div class="tool-use">Topology diagrams</div>
+          </div>
+          <div class="tool-chip">
+            <div class="tool-name">Cisco IOS</div>
+            <div class="tool-use">Router & switch OS</div>
+          </div>
+          <div class="tool-chip">
+            <div class="tool-name">GitHub</div>
+            <div class="tool-use">Documentation & hosting</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REFERENCES -->
+      <div class="section-block">
+        <p class="section-num">// references</p>
+        <h2 class="block-title">References</h2>
+        <ul class="ref-list">
+          <li><a href="https://www.cisco.com/c/en/us/training-events/training-certifications/certifications/associate/ccna.html" target="_blank">Cisco CCNA Certification</a></li>
+          <li><a href="https://www.ieee802.org/3/ad/" target="_blank">IEEE 802.3ad LACP Standard</a></li>
+          <li><a href="https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book.html" target="_blank">Cisco OSPF Configuration Guide</a></li>
+          <li><a href="https://tools.ietf.org/html/rfc1918" target="_blank">RFC 1918 — Private Address Space</a></li>
+          <li><a href="https://tools.ietf.org/html/rfc3022" target="_blank">RFC 3022 — Traditional IP NAT</a></li>
+          <li><a href="https://www.cisco.com/c/en/us/support/docs/lan-switching/etherchannel/12023-4.html" target="_blank">Cisco EtherChannel Configuration Guide</a></li>
+        </ul>
+      </div>
+
+      <a href="../index.html#projects" class="back-btn">← Back to Projects</a>
+
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Marshall Kunguma — marshnode.github.io
+  </footer>
+
+</body>
+</html>
