@@ -317,6 +317,15 @@ MX    @                  (mail provider)</code></pre>
       verification intact.
     </p>
 
+    <div class="callout">
+      <strong>Side note on publishing DNS records:</strong> Every record above is publicly
+      queryable via any DNS resolver, so publishing them in a portfolio adds nothing an attacker
+      could not learn in seconds with <code>dig</code> or a tool like dnsdumpster. The sensitive
+      items — API tokens, registrar credentials, internal-only subdomains, full SPF/DKIM selector
+      values — stay redacted. Knowing what is already public vs. what genuinely needs to stay
+      private is part of the job.
+    </div>
+
     <h3>// edge configuration</h3>
 
     <ul>
