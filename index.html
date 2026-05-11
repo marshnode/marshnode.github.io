@@ -152,11 +152,6 @@
     }
 
     /* CERTS */
-    .certs-section-label {
-      font-family: var(--mono); font-size: 0.65rem; color: var(--muted);
-      letter-spacing: 0.2em; text-transform: uppercase;
-      margin-bottom: 0.75rem; margin-top: 2rem;
-    }
     .certs-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 1rem;
     }
@@ -168,8 +163,6 @@
     .cert-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
     .cert-name { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); margin-bottom: 0.2rem; }
     .cert-issuer { font-size: 0.7rem; color: var(--muted); }
-    .cert-card.trifecta { border-top: 2px solid var(--accent2); }
-    .cert-card.trifecta .cert-name { color: var(--accent2); }
 
     /* PROJECTS */
     .projects-list { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -254,17 +247,20 @@
     <p class="hero-tag">// Cybersecurity & Networking Professional</p>
     <h1>
       <span class="name">Marshall Kunguma</span>
-      <span class="role">B.S. Cybersecurity · CCNA · CompTIA Trifecta+</span>
+      <span class="role">B.S. Cybersecurity · CCNA · CompTIA A+ Network+ Security+ PenTest+ CySA+</span>
     </h1>
     <p class="hero-desc">
       WGU Cybersecurity graduate with hands-on experience in network engineering,
       security operations, and IT infrastructure. Certified across networking,
-      security, and penetration testing — backed by real-world labs and documented projects.
+      security, and penetration testing — backed by production infrastructure
+      experience and documented lab projects.
     </p>
     <div class="hero-badges">
-      <span class="badge">CompTIA Trifecta</span>
-      <span class="badge">PenTest+</span>
-      <span class="badge">CySA+</span>
+      <span class="badge">CompTIA A+</span>
+      <span class="badge">CompTIA Network+</span>
+      <span class="badge">CompTIA Security+</span>
+      <span class="badge">CompTIA PenTest+</span>
+      <span class="badge">CompTIA CySA+</span>
       <span class="badge">CCNA</span>
       <span class="badge">ITIL 4</span>
       <span class="badge">LPI Linux Essentials</span>
@@ -298,27 +294,22 @@
     <p class="section-label">// credentials</p>
     <h2 class="section-title">Certifications</h2>
 
-    <p class="certs-section-label">— CompTIA Trifecta</p>
     <div class="certs-grid">
-      <div class="cert-card trifecta">
+      <div class="cert-card">
         <div class="cert-icon">🛠️</div>
         <div class="cert-name">CompTIA A+</div>
         <div class="cert-issuer">CompTIA</div>
       </div>
-      <div class="cert-card trifecta">
+      <div class="cert-card">
         <div class="cert-icon">🌐</div>
         <div class="cert-name">CompTIA Network+</div>
         <div class="cert-issuer">CompTIA</div>
       </div>
-      <div class="cert-card trifecta">
+      <div class="cert-card">
         <div class="cert-icon">🔒</div>
         <div class="cert-name">CompTIA Security+</div>
         <div class="cert-issuer">CompTIA</div>
       </div>
-    </div>
-
-    <p class="certs-section-label" style="margin-top:1.75rem;">— Advanced & Specialty</p>
-    <div class="certs-grid">
       <div class="cert-card">
         <div class="cert-icon">🕵️</div>
         <div class="cert-name">CompTIA PenTest+</div>
@@ -350,8 +341,31 @@
   <!-- PROJECTS -->
   <section id="projects">
     <p class="section-label">// hands-on work</p>
-    <h2 class="section-title">Lab Projects</h2>
+    <h2 class="section-title">Projects</h2>
     <div class="projects-list">
+
+      <div class="project-card">
+        <div class="project-header">
+          <a href="writeups/dingdongplumbers-infrastructure.html" target="_blank" style="color:inherit;text-decoration:none;">
+  <div class="project-title">Ding Dong Plumbers — Production Web Infrastructure ↗</div>
+</a>
+          <div class="project-tags">
+            <span class="tag">Production</span>
+            <span class="tag">Cloudflare</span>
+            <span class="tag">DNS</span>
+            <span class="tag">CI/CD</span>
+            <span class="tag">Static Site</span>
+            <span class="tag">Security Hardening</span>
+          </div>
+        </div>
+        <p class="project-desc">
+          Six-year ongoing engagement (2019 — present) as the sole IT and web consultant for a Gauteng plumbing
+          business. Designed and maintain the production website at dingdongplumbers.co.za including domain
+          and DNS management on Cloudflare, HTTPS enforcement, Git-based CI/CD, and on-page SEO with structured
+          data and programmatic location landing pages. Chose static architecture deliberately for reduced attack
+          surface, lower maintenance overhead, and edge-cached performance.
+        </p>
+      </div>
 
       <div class="project-card">
         <div class="project-header">
